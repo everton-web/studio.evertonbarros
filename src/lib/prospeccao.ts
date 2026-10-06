@@ -92,8 +92,9 @@ function extrairJson(texto: string): unknown[] {
 async function buscarCandidatos(nicho: string, cidade: string, limite: number, erros: Resultado["erros"]): Promise<{ lista: Candidato[]; modelo: string }> {
   if (!OPENROUTER_KEY) throw new Error("OPENROUTER_API_KEY não configurada no servidor");
   const prompt =
-    `Pesquise na web ${limite + 4} ${NICHOS[nicho] || nicho} reais e em funcionamento em ${cidade}, Brasil. ` +
-    "Prefira negócios pequenos e médios, independentes (não franquias nem redes nacionais). " +
+    `Pesquise na web ${limite * 2} ${NICHOS[nicho] || nicho} reais e em funcionamento em ${cidade}, Brasil. ` +
+    "Prefira negócios pequenos e médios, independentes (não franquias nem redes nacionais), " +
+    "incluindo os que aparecem em guias, diretórios e no Google Maps com site simples, antigo ou sem site. " +
     "Para cada um, traga só dados que você encontrou nas fontes: nome, site próprio (deixe vazio se não tiver ou se for só Instagram), " +
     "telefone com DDD, perfil do Instagram, nota e número de avaliações no Google se aparecerem. Não invente nada. " +
     'Responda APENAS um array JSON: [{"nome":"","site":"","telefone":"","instagram":"","nota":null,"avaliacoes":null}]';
@@ -213,6 +214,10 @@ function auditar(html: string): { problemas: string[]; contatos: Contatos } {
   if (ano && Number(ano) < 2023) problemas.push(`conteúdo datado (${ano})`);
   if (/wix\.com|google\.com\/sites|webnode|site123|gratis/i.test(low)) problemas.push("plataforma gratuita ou terceirizada");
   if (!/<meta[^>]+name=["']description["']/i.test(html)) problemas.push("sem descrição para o Google");
+  if (!/googletagmanager\.com|gtag\(|google-analytics\.com|fbq\(|connect\.facebook\.net\/[^"']*fbevents/i.test(html)) problemas.push("sem rastreamento (Analytics ou pixel)");
+  if (!/<meta[^>]+property=["']og:(title|image)["']/i.test(html)) problemas.push("sem prévia para compartilhar no WhatsApp");
+  if (!/<h1[\s>]/i.test(html)) problemas.push("sem título principal (H1)");
+  if (/jquery[.-]1\.|jquery[.-]2\.|bootstrap[.-][23]\./i.test(low)) problemas.push("código antigo (bibliotecas desatualizadas)");
   return { problemas, contatos };
 }
 
@@ -295,20 +300,27 @@ export async function prospectar(op: { nicho?: string; cidade?: string; limite?:
           const aud = auditar(diag.html);
           const temContato = !!(c.telefone || aud.contatos.whatsapp || aud.contatos.telefone || aud.contatos.email);
           if (!temContato) { res.descartados.push({ nome: c.nome, motivo: "nenhum telefone, WhatsApp ou e-mail" }); return; }
+          // "Sem telefone clicável" e "sem descrição" sozinhos não justificam abordagem.
           const fortes = aud.problemas.filter((p) => !/sem telefone clicável|sem descrição/.test(p));
-          if (fortes.length < 2) {
-            res.descartados.push({ nome: c.nome, motivo: `site razoável${aud.problemas.length ? ` (${aud.problemas.join("; ")})` : ""}` });
+          let a: Awaited<ReturnType<typeof analisarLead>> | null = null;
+          try {
+            a = await analisarLead({
+              id: slugNome(c.nome), nome: c.nome, cidade, site: c.site,
+              nota: c.nota || 0, avaliacoes: c.avaliacoes || 0,
+              whatsapp: aud.contatos.whatsapp || c.telefone, contato: c.telefone, email: aud.contatos.email || "",
+            });
+          } catch { /* sem análise, decide só pela auditoria */ }
+          const pts = a?.pontuacao ?? 100;
+          const entra = fortes.length >= 2 || pts <= 60 || (fortes.length >= 1 && pts <= 75);
+          if (!entra) {
+            res.descartados.push({ nome: c.nome, motivo: `site razoável · presença ${a ? pts + "/100" : "?"}${aud.problemas.length ? ` (${aud.problemas.join("; ")})` : ""}` });
             return;
           }
-          const novo = await add(c, "site-ruim", `Auditoria: ${aud.problemas.join("; ")}.`, aud.contatos);
-          // Análise completa fica pronta na ficha, sem bloquear se falhar.
-          if (novo?.id) {
+          const novo = await add(c, "site-ruim", `${a ? `Presença ${pts}/100. ` : ""}Auditoria: ${aud.problemas.join("; ")}.`, aud.contatos);
+          // Reaproveita a análise já calculada na ficha nova.
+          if (novo?.id && a) {
             try {
-              const a = await analisarLead({
-                id: novo.id, nome: c.nome, cidade, site: c.site,
-                nota: c.nota || 0, avaliacoes: c.avaliacoes || 0,
-                whatsapp: aud.contatos.whatsapp || c.telefone, contato: c.telefone, email: aud.contatos.email || "",
-              });
+              a.id = novo.id;
               await salvarAnalise(a);
               await gravarAnaliseNaFicha(novo.id, resumoMd(a), a.pontuacao, a);
             } catch { /* a análise pode ser refeita na ficha */ }
