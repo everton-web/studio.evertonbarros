@@ -331,7 +331,48 @@ export function Pipeline({ leads, refresh, onIrClientes }: { leads: Lead[]; refr
   const relatorioPollRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [janela, setJanela] = useState<JanelaConversao>("tudo");
 
-  // A prospecção automática roda na VPS por CLI (opção A da migração Supabase).
+  // Prospecção automática: OpenRouter com busca na web + checagem por código (lib/prospector.ts).
+  type ResumoProspec = { adicionados: string[]; descartados: { nome: string; motivo: string }[]; erros: { nome: string; motivo: string }[]; fonte: string; modelo: string; auditados: number; candidatos: number; aviso: string; tempo: number; regiao: string; porFrente?: Record<string, number> };
+  const [nicho, setNicho] = useState("odontologia");
+  const [cidade, setCidade] = useState("Salvador, BA");
+  const [frentesSel, setFrentesSel] = useState<string[]>(FRENTES.map((x) => x.id));
+  const [prospectBusy, setProspectBusy] = useState(false);
+  const [prog, setProg] = useState("");
+  const [prospectRes, setProspectRes] = useState<ResumoProspec | null>(null);
+  useEffect(() => {
+    try {
+      const n = localStorage.getItem("prospeccao.nicho");
+      const c = localStorage.getItem("prospeccao.cidade");
+      const f = JSON.parse(localStorage.getItem("prospeccao.frentes") || "null");
+      if (n) setNicho(n);
+      if (c) setCidade(c);
+      if (Array.isArray(f) && f.length) setFrentesSel(f);
+    } catch {}
+  }, []);
+  const alternarFrente = (id: string) => setFrentesSel((atual) => {
+    const prox = atual.includes(id) ? atual.filter((x) => x !== id) : [...atual, id];
+    const final = prox.length ? prox : atual;
+    try { localStorage.setItem("prospeccao.frentes", JSON.stringify(final)); } catch {}
+    return final;
+  });
+  async function rodarProspeccao() {
+    try { localStorage.setItem("prospeccao.nicho", nicho); localStorage.setItem("prospeccao.cidade", cidade); } catch {}
+    setProspectBusy(true); setProspectRes(null); setProg("");
+    const timer = setInterval(() => {
+      fetch("/api/prospector").then((r) => (r.ok ? r.json() : null)).then((j: { progresso?: { ativo?: boolean; fase?: string; feito?: number; total?: number } } | null) => {
+        if (!j?.progresso?.ativo) return;
+        setProg(j.progresso.fase === "auditando" ? `auditando ${j.progresso.feito ?? 0} de ${j.progresso.total ?? 0}…` : "buscando empresas…");
+      }).catch(() => {});
+    }, 1500);
+    try {
+      const r = await fetch("/api/prospector", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ nicho, cidade, limite: 8, frentes: frentesSel }) });
+      const j = await r.json().catch(() => ({ ok: false, error: `HTTP ${r.status}` }));
+      if (!j.ok) { alert(j.error || "erro na prospecção"); return; }
+      setProspectRes(j.resumo);
+      await refresh();
+    } catch { alert("falha de rede"); }
+    finally { clearInterval(timer); setProg(""); setProspectBusy(false); }
+  }
 
   // cancela o polling do relatório quando a ficha fecha/troca ou o componente desmonta
   useEffect(() => {
@@ -553,6 +594,25 @@ export function Pipeline({ leads, refresh, onIrClientes }: { leads: Lead[]; refr
             </div>
           ))}
         </div>
+        <div className="flex flex-wrap items-center gap-2">
+          <select value={nicho} onChange={(e) => setNicho(e.target.value)} aria-label="Segmento da prospecção" className="h-[52px] px-3 rounded-[14px] bg-[var(--bg-2)] border border-[var(--line)] text-[.84rem] text-[#e8e8e6] outline-none focus:border-[#7aa2ff]/60 transition-colors">
+            {NICHOS.map(([v, l]) => <option key={v} value={v}>{l}</option>)}
+          </select>
+          <input type="text" value={cidade} onChange={(e) => setCidade(e.target.value)} placeholder="cidade (ex.: Salvador, BA)" aria-label="Cidade da prospecção" className="h-[52px] w-[180px] px-3 rounded-[14px] bg-[var(--bg-2)] border border-[var(--line)] text-[.84rem] text-[#e8e8e6] outline-none focus:border-[#7aa2ff]/60 transition-colors placeholder:text-[#5d5d58]" />
+          <div role="group" aria-label="Frentes da prospecção" className="flex flex-wrap items-center gap-1.5">
+            {FRENTES.map((fr) => {
+              const on = frentesSel.includes(fr.id);
+              return (
+                <button key={fr.id} type="button" aria-pressed={on} title={fr.longo} onClick={() => alternarFrente(fr.id)} className="h-[52px] px-3 rounded-[14px] border text-[.78rem] transition-colors" style={on ? { color: fr.cor, borderColor: fr.cor + "66", background: fr.cor + "18" } : { color: "#6d6d68", borderColor: "rgba(255,255,255,.08)", background: "transparent" }}>
+                  {on ? "✓ " : ""}{fr.curto}
+                </button>
+              );
+            })}
+          </div>
+          <button onClick={rodarProspeccao} disabled={prospectBusy || busy || !cidade.trim()} className="flex items-center justify-center gap-2 h-[52px] px-5 rounded-[14px] bg-[#7aa2ff]/12 border border-[#7aa2ff]/30 text-[#7aa2ff] hover:bg-[#7aa2ff]/20 text-[.86rem] font-medium transition-colors disabled:opacity-60">
+            {prospectBusy ? (prog || "prospectando…") : "▶ prospectar"}
+          </button>
+        </div>
         <button
           onClick={openNovo}
           disabled={busy}
@@ -561,6 +621,43 @@ export function Pipeline({ leads, refresh, onIrClientes }: { leads: Lead[]; refr
           + novo lead
         </button>
       </div>
+
+      {prospectRes && (
+        <div className="mb-6 bg-[var(--bg-2)] border border-[#7aa2ff]/25 rounded-2xl p-5">
+          <div className="flex items-center gap-3 mb-3">
+            <span className="mono text-[#7aa2ff]">prospecção rodada</span>
+            <span className="mono" style={{ fontSize: "0.7rem" }}>{prospectRes.regiao} · {prospectRes.modelo || prospectRes.fonte}</span>
+            <button onClick={() => setProspectRes(null)} aria-label="fechar" className="ml-auto w-8 h-8 grid place-items-center rounded-lg border border-white/10 text-[#8a8a85] hover:text-white transition-colors">✕</button>
+          </div>
+          <div className="text-[.9rem] mb-3">
+            <b className="text-[#3ddc84]">{prospectRes.adicionados.length}</b> lead(s) no estágio 0 ·
+            <b className="text-[#7aa2ff]"> {prospectRes.auditados}</b> site(s) auditados ·
+            <b className="text-[#b8b8b3]"> {prospectRes.candidatos}</b> empresa(s) encontradas
+            {prospectRes.tempo ? <> · <span className="text-[#8a8a85]">{prospectRes.tempo}s</span></> : null}
+          </div>
+          {prospectRes.porFrente && (
+            <div className="flex flex-wrap gap-2 mb-3">
+              {FRENTES.map((fr) => (
+                <span key={fr.id} className="mono px-2.5 py-1.5 rounded-lg border" style={{ fontSize: "0.7rem", color: fr.cor, borderColor: fr.cor + "40", background: fr.cor + "10" }}>{fr.curto} · {prospectRes.porFrente?.[fr.id] ?? 0}</span>
+              ))}
+            </div>
+          )}
+          {prospectRes.aviso && <div className="mb-3 rounded-xl border border-[#d9a03a]/25 bg-[#d9a03a]/6 px-4 py-3 text-[.8rem] text-[#d9a03a]">⚠ {prospectRes.aviso}</div>}
+          {prospectRes.erros.length > 0 && (
+            <div className="mb-3 space-y-1">
+              {prospectRes.erros.slice(0, 6).map((e, i) => <div key={i} className="text-[.74rem] text-[#fb7185]/85">· {e.nome}: {e.motivo}</div>)}
+            </div>
+          )}
+          {prospectRes.descartados.length > 0 && (
+            <details>
+              <summary className="mono cursor-pointer text-[#8a8a85]" style={{ fontSize: "0.68rem" }}>{prospectRes.descartados.length} descartado(s)</summary>
+              <div className="mt-2 space-y-1">
+                {prospectRes.descartados.map((d, i) => <div key={i} className="text-[.74rem] text-[#8a8a85]">· {d.nome}: {d.motivo}</div>)}
+              </div>
+            </details>
+          )}
+        </div>
+      )}
 
       {/* funil de conversão (studio) */}
       <div className="mb-6 card p-5 sm:p-6">
