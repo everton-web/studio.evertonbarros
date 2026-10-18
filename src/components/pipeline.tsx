@@ -39,11 +39,9 @@ export type Lead = {
   cliente?: boolean; // já virou cliente no banco: sai do funil e vive em Clientes
 };
 
-// As 3 frentes da prospecção (02/10). Cor por frente para bater o olho no funil.
+// Frente da prospecção: site no ar com problema de UX/UI. Cor para bater o olho no funil.
 const FRENTES = [
-  { id: "sem-gmn", curto: "Sem Google", longo: "Google Meu Negócio não configurado", cor: "#d9a03a" },
-  { id: "site-quebrado", curto: "Site quebrado", longo: "Google Meu Negócio com site quebrado", cor: "#fb7185" },
-  { id: "site-ruim", curto: "Site ruim", longo: "Google Meu Negócio com site mal construído", cor: "#7aa2ff" },
+  { id: "site-ruim", curto: "Site ruim", longo: "Site no ar com problemas de UX e UI, WhatsApp e Instagram validados", cor: "#7aa2ff" },
 ] as const;
 const frenteDe = (id?: string) => FRENTES.find((x) => x.id === id);
 
@@ -331,11 +329,10 @@ export function Pipeline({ leads, refresh, onIrClientes }: { leads: Lead[]; refr
   const relatorioPollRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [janela, setJanela] = useState<JanelaConversao>("tudo");
 
-  // Prospecção automática: OpenRouter com busca na web + checagem por código (lib/prospector.ts).
+  // Prospecção automática: Google Maps (scraper) + checagem de UX/UI, WhatsApp e Instagram (lib/prospeccao.ts).
   type ResumoProspec = { adicionados: string[]; descartados: { nome: string; motivo: string }[]; erros: { nome: string; motivo: string }[]; fonte: string; modelo: string; auditados: number; candidatos: number; aviso: string; tempo: number; regiao: string; porFrente?: Record<string, number> };
   const [nicho, setNicho] = useState("odontologia");
   const [cidade, setCidade] = useState("Salvador, BA");
-  const [frentesSel, setFrentesSel] = useState<string[]>(FRENTES.map((x) => x.id));
   const [prospectBusy, setProspectBusy] = useState(false);
   const [prog, setProg] = useState("");
   const [prospectRes, setProspectRes] = useState<ResumoProspec | null>(null);
@@ -343,29 +340,21 @@ export function Pipeline({ leads, refresh, onIrClientes }: { leads: Lead[]; refr
     try {
       const n = localStorage.getItem("prospeccao.nicho");
       const c = localStorage.getItem("prospeccao.cidade");
-      const f = JSON.parse(localStorage.getItem("prospeccao.frentes") || "null");
       if (n) setNicho(n);
       if (c) setCidade(c);
-      if (Array.isArray(f) && f.length) setFrentesSel(f);
     } catch {}
   }, []);
-  const alternarFrente = (id: string) => setFrentesSel((atual) => {
-    const prox = atual.includes(id) ? atual.filter((x) => x !== id) : [...atual, id];
-    const final = prox.length ? prox : atual;
-    try { localStorage.setItem("prospeccao.frentes", JSON.stringify(final)); } catch {}
-    return final;
-  });
   async function rodarProspeccao() {
     try { localStorage.setItem("prospeccao.nicho", nicho); localStorage.setItem("prospeccao.cidade", cidade); } catch {}
     setProspectBusy(true); setProspectRes(null); setProg("");
     const timer = setInterval(() => {
       fetch("/api/prospector").then((r) => (r.ok ? r.json() : null)).then((j: { progresso?: { ativo?: boolean; fase?: string; feito?: number; total?: number } } | null) => {
         if (!j?.progresso?.ativo) return;
-        setProg(j.progresso.fase === "auditando" ? `auditando ${j.progresso.feito ?? 0} de ${j.progresso.total ?? 0}…` : "buscando empresas…");
+        setProg(j.progresso.fase === "auditando" ? `auditando ${j.progresso.feito ?? 0} de ${j.progresso.total ?? 0}…` : `${j.progresso.fase || "prospectando"}…`);
       }).catch(() => {});
     }, 1500);
     try {
-      const r = await fetch("/api/prospector", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ nicho, cidade, limite: 8, frentes: frentesSel }) });
+      const r = await fetch("/api/prospector", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ nicho, cidade, limite: 8 }) });
       const j = await r.json().catch(() => ({ ok: false, error: `HTTP ${r.status}` }));
       if (!j.ok) { alert(j.error || "erro na prospecção"); return; }
       setProspectRes(j.resumo);
@@ -599,16 +588,9 @@ export function Pipeline({ leads, refresh, onIrClientes }: { leads: Lead[]; refr
             {NICHOS.map(([v, l]) => <option key={v} value={v}>{l}</option>)}
           </select>
           <input type="text" value={cidade} onChange={(e) => setCidade(e.target.value)} placeholder="cidade (ex.: Salvador, BA)" aria-label="Cidade da prospecção" className="h-[52px] w-[180px] px-3 rounded-[14px] bg-[var(--bg-2)] border border-[var(--line)] text-[.84rem] text-[#e8e8e6] outline-none focus:border-[#7aa2ff]/60 transition-colors placeholder:text-[#5d5d58]" />
-          <div role="group" aria-label="Frentes da prospecção" className="flex flex-wrap items-center gap-1.5">
-            {FRENTES.map((fr) => {
-              const on = frentesSel.includes(fr.id);
-              return (
-                <button key={fr.id} type="button" aria-pressed={on} title={fr.longo} onClick={() => alternarFrente(fr.id)} className="h-[52px] px-3 rounded-[14px] border text-[.78rem] transition-colors" style={on ? { color: fr.cor, borderColor: fr.cor + "66", background: fr.cor + "18" } : { color: "#6d6d68", borderColor: "rgba(255,255,255,.08)", background: "transparent" }}>
-                  {on ? "✓ " : ""}{fr.curto}
-                </button>
-              );
-            })}
-          </div>
+          <span title={FRENTES[0].longo} className="flex items-center h-[52px] px-3 rounded-[14px] border text-[.78rem]" style={{ color: FRENTES[0].cor, borderColor: FRENTES[0].cor + "66", background: FRENTES[0].cor + "18" }}>
+            {FRENTES[0].curto}
+          </span>
           <button onClick={rodarProspeccao} disabled={prospectBusy || busy || !cidade.trim()} className="flex items-center justify-center gap-2 h-[52px] px-5 rounded-[14px] bg-[#7aa2ff]/12 border border-[#7aa2ff]/30 text-[#7aa2ff] hover:bg-[#7aa2ff]/20 text-[.86rem] font-medium transition-colors disabled:opacity-60">
             {prospectBusy ? (prog || "prospectando…") : "▶ prospectar"}
           </button>

@@ -178,7 +178,7 @@ export type OpPipeline = {
   action: string; id?: string; nome?: string; segmento?: string; cidade?: string;
   nota?: string; avaliacoes?: string; site?: string; contato?: string; whatsapp?: string;
   email?: string; categoria?: string; porque?: string; solucao?: string; mensagem?: string;
-  estagio?: number; motivo?: string; desfecho?: string; frente?: string;
+  estagio?: number; motivo?: string; desfecho?: string; frente?: string; instagram?: string;
 };
 
 async function criarLead(op: OpPipeline): Promise<{ id: string; criado: string }> {
@@ -188,7 +188,7 @@ async function criarLead(op: OpPipeline): Promise<{ id: string; criado: string }
     lead: op.nome || "", segmento: op.segmento || "", cidade: op.cidade || "",
     "nota-google": op.nota || "", avaliacoes: op.avaliacoes || "",
     "site-atual": op.site || "", contato: op.contato || "", whatsapp: op.whatsapp || "",
-    email: op.email || "", categoria: op.categoria || "maps", frente: op.frente || "",
+    email: op.email || "", instagram: op.instagram || "", categoria: op.categoria || "maps", frente: op.frente || "",
     estagio: "0", status: "ativo", solucao: "", "motivo-arquivo": "",
     porque: (op.porque || "").replace(/\r?\n/g, " "), criado: now,
     "contatado-em": "", "respondeu-em": "", desfecho: "", "desfecho-em": "",

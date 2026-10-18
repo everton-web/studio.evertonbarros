@@ -1,27 +1,22 @@
-// Prospecção automática nas 3 frentes (sem Google, site quebrado, site ruim).
-// 1. Um modelo do OpenRouter com busca na web lista negócios do segmento na cidade.
-// 2. Código (sem IA) confere cada um: domínio existe? site abre? está quebrado? auditoria.
-// 3. Só entra no funil quem tem problema real e algum canal de contato.
-// Roda na Hostinger, sem PC nem CLI. Chave: OPENROUTER_API_KEY (só servidor).
+// Prospecção automática: o Google Maps traz os negócios reais do segmento na cidade, e só
+// entra no funil quem tem site no ar com problema de UX/UI e WhatsApp e Instagram validados.
+// 1. Scraper do Google Maps (kit vzbaggio/google-maps-scraper-kit): nome, site e telefone reais.
+// 2. Código confere o site (no ar, sem erro) e dá nota de UX/UI (lib/ux-auditoria.ts).
+// 3. Código valida o WhatsApp (celular, número publicado no site) e o Instagram (linkado no site, perfil).
+// Sem IA na busca: nada é inventado, então não entram domínios que não existem nem sites quebrados.
 import { lookup, resolveNs } from "node:dns/promises";
-import { analisarLead, resumoMd, salvarAnalise } from "@/lib/analise";
+import { analisarLead, extrairRedes, resumoMd, salvarAnalise } from "@/lib/analise";
 import { gravarAnaliseNaFicha, listarLeads, pipelineOp } from "@/lib/data";
+import { buscarNoMaps, scraperConfigurado, type Lugar } from "@/lib/gmaps-scraper";
+import { auditarUX } from "@/lib/ux-auditoria";
+import { validarInstagram, validarWhatsapp } from "@/lib/validacao-contatos";
 
 const UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0 Safari/537.36";
-const OPENROUTER_KEY = process.env.OPENROUTER_API_KEY || "";
-// Ordem de preferência; os gratuitos mudam com o tempo, então a lista real é filtrada
-// pelo catálogo do OpenRouter na hora. OPENROUTER_MODELS (separado por vírgula) substitui.
-const PREFERIDOS = (process.env.OPENROUTER_MODELS ||
-  "google/gemma-4-31b-it:free,nvidia/nemotron-3-super-120b-a12b:free,nvidia/nemotron-3-ultra-550b-a55b:free,google/gemma-4-26b-a4b-it:free")
-  .split(",").map((s) => s.trim()).filter(Boolean);
+// Nota de UX/UI abaixo disso, com falha de celular ou de conversão, o site entra no funil.
+const NOTA_MINIMA_SITE = 70;
 
-export type Frente = "sem-gmn" | "site-quebrado" | "site-ruim";
-export const FRENTES: Frente[] = ["sem-gmn", "site-quebrado", "site-ruim"];
-export const FRENTE_LABEL: Record<Frente, string> = {
-  "sem-gmn": "Google Meu Negócio sem site ou incompleto",
-  "site-quebrado": "Site quebrado ou fora do ar",
-  "site-ruim": "Site no ar, mas mal construído",
-};
+export const FRENTE = "site-ruim";
+export const FRENTE_LABEL = "Site no ar, mas com problemas de UX e UI";
 
 export const NICHOS: Record<string, string> = {
   odontologia: "clínicas odontológicas e dentistas",
@@ -38,11 +33,10 @@ export const NICHOS: Record<string, string> = {
   "escolas-cursos": "escolas e cursos livres",
 };
 
-type Candidato = { nome: string; site: string; telefone: string; instagram: string; nota: number | null; avaliacoes: number | null };
 export type Resultado = {
   fonte: string; modelo: string; candidatos: number; auditados: number; adicionados: string[];
   descartados: { nome: string; motivo: string }[]; erros: { nome: string; motivo: string }[];
-  porFrente: Record<Frente, number>; aviso: string; tempo: number; regiao: string; cidades: string[];
+  porFrente: Record<typeof FRENTE, number>; aviso: string; tempo: number; regiao: string; cidades: string[];
 };
 
 export const progresso = { ativo: false, fase: "", feito: 0, total: 0 };
@@ -54,93 +48,12 @@ function slugNome(nome: string): string {
 function hostnameDe(url: string): string {
   try { return new URL(url.startsWith("http") ? url : `https://${url}`).hostname.replace(/^www\./, "").toLowerCase(); } catch { return ""; }
 }
-// Telefone brasileiro válido (fixo ou celular), normalizado com 55. Qualquer outra coisa vira "".
-function foneBR(v: string): string {
-  let d = String(v || "").replace(/\D/g, "");
-  if (d.startsWith("55") && d.length >= 12) d = d.slice(2);
-  if (d.startsWith("0")) d = d.slice(1);
-  if (!/^[1-9][1-9]/.test(d)) return "";
-  if (d.length === 10 && /[6-9]/.test(d[2])) d = d.slice(0, 2) + "9" + d.slice(2);
-  if (d.length === 10 && /[2-5]/.test(d[2])) return "55" + d;
-  if (d.length === 11 && d[2] === "9") return "55" + d;
-  return "";
-}
-// Sites que não são "o site da empresa" (rede social, diretório, marketplace).
-const NAO_E_SITE = /(instagram|facebook|linkedin|youtube|tiktok|wa\.me|whatsapp|linktr\.ee|google\.com|goo\.gl|doctoralia|boaconsulta|ifood|tripadvisor|booking\.com|guiamais|apontador|telelistas|solutudo|cylex|econodata|cnpj)/i;
-
-// ---------- 1. busca (OpenRouter + web) ----------
-async function modelosDisponiveis(): Promise<string[]> {
-  try {
-    const r = await fetch("https://openrouter.ai/api/v1/models", { signal: AbortSignal.timeout(8000) });
-    const ids = new Set(((await r.json()).data as { id: string }[]).map((m) => m.id));
-    const ok = PREFERIDOS.filter((m) => ids.has(m));
-    if (ok.length) return ok;
-    return [...ids].filter((id) => id.endsWith(":free")).slice(0, 4);
-  } catch {
-    return PREFERIDOS;
-  }
+function extrairEmail(html: string): string {
+  const m = html.match(/href=["']mailto:([^"'?\s]+@[^"'?\s]+)/i)?.[1];
+  return m && !/example|seudominio|email@/i.test(m) ? m.toLowerCase() : "";
 }
 
-function extrairJson(texto: string): unknown[] {
-  const bloco = texto.match(/```(?:json)?\s*([\s\S]*?)```/)?.[1] ?? texto;
-  const ini = bloco.indexOf("[");
-  const fim = bloco.lastIndexOf("]");
-  if (ini < 0 || fim <= ini) return [];
-  try { const v = JSON.parse(bloco.slice(ini, fim + 1)); return Array.isArray(v) ? v : []; } catch { return []; }
-}
-
-async function buscarCandidatos(nicho: string, cidade: string, limite: number, erros: Resultado["erros"]): Promise<{ lista: Candidato[]; modelo: string }> {
-  if (!OPENROUTER_KEY) throw new Error("OPENROUTER_API_KEY não configurada no servidor");
-  const prompt =
-    `Pesquise na web ${limite * 2} ${NICHOS[nicho] || nicho} reais e em funcionamento em ${cidade}, Brasil. ` +
-    "Prefira negócios pequenos e médios, independentes (não franquias nem redes nacionais), " +
-    "incluindo os que aparecem em guias, diretórios e no Google Maps com site simples, antigo ou sem site. " +
-    "Para cada um, traga só dados que você encontrou nas fontes: nome, site próprio (deixe vazio se não tiver ou se for só Instagram), " +
-    "telefone com DDD, perfil do Instagram, nota e número de avaliações no Google se aparecerem. Não invente nada. " +
-    'Responda APENAS um array JSON: [{"nome":"","site":"","telefone":"","instagram":"","nota":null,"avaliacoes":null}]';
-
-  for (const modelo of await modelosDisponiveis()) {
-    try {
-      const r = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-        method: "POST",
-        signal: AbortSignal.timeout(45000),
-        headers: {
-          Authorization: `Bearer ${OPENROUTER_KEY}`,
-          "Content-Type": "application/json",
-          "HTTP-Referer": "https://app.evertonbrito.com",
-          "X-Title": "Plataforma Marca Digital",
-        },
-        body: JSON.stringify({
-          model: modelo,
-          messages: [{ role: "user", content: prompt }],
-          plugins: [{ id: "web", max_results: 8 }],
-          temperature: 0.2,
-        }),
-      });
-      const j = await r.json();
-      if (!r.ok) throw new Error(j?.error?.message || `HTTP ${r.status}`);
-      const lista = extrairJson(String(j.choices?.[0]?.message?.content || ""))
-        .map((x) => x as Record<string, unknown>)
-        .map((x) => ({
-          nome: String(x.nome || "").trim(),
-          site: String(x.site || "").trim(),
-          telefone: foneBR(String(x.telefone || "")),
-          instagram: String(x.instagram || "").trim(),
-          nota: Number(x.nota) > 0 && Number(x.nota) <= 5 ? Number(x.nota) : null,
-          avaliacoes: Number(x.avaliacoes) > 0 ? Math.round(Number(x.avaliacoes)) : null,
-        }))
-        .filter((c) => c.nome.length > 2)
-        .map((c) => ({ ...c, site: c.site && !NAO_E_SITE.test(c.site) ? (c.site.startsWith("http") ? c.site : `https://${c.site}`) : "" }));
-      if (lista.length) return { lista, modelo };
-      erros.push({ nome: modelo, motivo: "resposta sem lista válida" });
-    } catch (e) {
-      erros.push({ nome: modelo, motivo: e instanceof Error ? e.message.slice(0, 120) : "falha" });
-    }
-  }
-  return { lista: [], modelo: "" };
-}
-
-// ---------- 2. checagens por código ----------
+// ---------- 1. o site existe e abre? ----------
 async function estadoDominio(url: string): Promise<"aponta" | "registrado" | "inexistente"> {
   const host = hostnameDe(url);
   if (!host) return "inexistente";
@@ -190,144 +103,108 @@ async function diagnosticarSite(url: string): Promise<Diagnostico> {
   } finally { clearTimeout(t); }
 }
 
-type Contatos = { whatsapp?: string; telefone?: string; email?: string };
-function extrairContatos(html: string): Contatos {
-  const wa = html.match(/(?:wa\.me\/|api\.whatsapp\.com\/send\/?\?phone=)(\+?\d{10,13})/i)?.[1];
-  const tel = html.match(/href=["']tel:([+\d\s().-]{8,20})["']/i)?.[1];
-  const email = html.match(/href=["']mailto:([^"'?\s]+@[^"'?\s]+)/i)?.[1];
-  return {
-    whatsapp: (wa && foneBR(wa)) || undefined,
-    telefone: (tel && foneBR(tel)) || undefined,
-    email: email && !/example|seudominio|email@/i.test(email) ? email.toLowerCase() : undefined,
-  };
-}
-
-function auditar(html: string): { problemas: string[]; contatos: Contatos } {
-  const contatos = extrairContatos(html);
-  const low = html.toLowerCase();
-  const problemas: string[] = [];
-  if (!/<meta[^>]+name=["']viewport["']/i.test(html)) problemas.push("sem meta viewport (quebra no celular)");
-  if (!/wa\.me\/|api\.whatsapp\.com|whatsapp/i.test(low)) problemas.push("sem botão de WhatsApp visível");
-  if (!/tel:/i.test(low) && !contatos.whatsapp) problemas.push("sem telefone clicável");
-  if (!/<title>/i.test(low)) problemas.push("sem título de página");
-  const ano = (html.match(/©\s*(20\d\d)|(20\d\d)\s*©/) || [])[1];
-  if (ano && Number(ano) < 2023) problemas.push(`conteúdo datado (${ano})`);
-  if (/wix\.com|google\.com\/sites|webnode|site123|gratis/i.test(low)) problemas.push("plataforma gratuita ou terceirizada");
-  if (!/<meta[^>]+name=["']description["']/i.test(html)) problemas.push("sem descrição para o Google");
-  if (!/googletagmanager\.com|gtag\(|google-analytics\.com|fbq\(|connect\.facebook\.net\/[^"']*fbevents/i.test(html)) problemas.push("sem rastreamento (Analytics ou pixel)");
-  if (!/<meta[^>]+property=["']og:(title|image)["']/i.test(html)) problemas.push("sem prévia para compartilhar no WhatsApp");
-  if (!/<h1[\s>]/i.test(html)) problemas.push("sem título principal (H1)");
-  if (/jquery[.-]1\.|jquery[.-]2\.|bootstrap[.-][23]\./i.test(low)) problemas.push("código antigo (bibliotecas desatualizadas)");
-  return { problemas, contatos };
-}
-
-// ---------- 3. orquestrador ----------
-export async function prospectar(op: { nicho?: string; cidade?: string; limite?: number; frentes?: string[] } = {}): Promise<Resultado> {
+// ---------- 2. orquestrador ----------
+export async function prospectar(op: { nicho?: string; cidade?: string; limite?: number } = {}): Promise<Resultado> {
+  if (progresso.ativo) throw new Error("já há uma prospecção rodando; aguarde ela terminar");
+  if (!scraperConfigurado()) throw new Error("GMAPS_SCRAPER_URL não configurada: o scraper do Google Maps precisa estar no ar");
   const t0 = Date.now();
-  const frentes = new Set<Frente>((op.frentes || FRENTES).filter((x): x is Frente => (FRENTES as string[]).includes(x)));
-  if (!frentes.size) FRENTES.forEach((x) => frentes.add(x));
   const nicho = op.nicho && NICHOS[op.nicho] ? op.nicho : "odontologia";
   const cidade = (op.cidade || "Salvador, BA").trim().slice(0, 80);
   const limite = Math.min(12, Math.max(1, op.limite || 8));
 
   const res: Resultado = {
-    fonte: "OpenRouter + busca na web", modelo: "", candidatos: 0, auditados: 0, adicionados: [], descartados: [], erros: [],
-    porFrente: { "sem-gmn": 0, "site-quebrado": 0, "site-ruim": 0 }, aviso: "", tempo: 0, regiao: cidade, cidades: [cidade],
+    fonte: "Google Maps (gosom/google-maps-scraper)", modelo: "", candidatos: 0, auditados: 0, adicionados: [], descartados: [], erros: [],
+    porFrente: { "site-ruim": 0 }, aviso: "", tempo: 0, regiao: cidade, cidades: [cidade],
   };
-  Object.assign(progresso, { ativo: true, fase: "buscando empresas", feito: 0, total: 0 });
+  Object.assign(progresso, { ativo: true, fase: "buscando no Google Maps", feito: 0, total: 0 });
 
   try {
-    const { lista, modelo } = await buscarCandidatos(nicho, cidade, limite, res.erros);
-    res.modelo = modelo;
-    res.candidatos = lista.length;
-    if (!lista.length) {
-      res.aviso = `Nenhum modelo retornou empresas de "${NICHOS[nicho]}" em ${cidade}. Veja os erros abaixo; se for limite dos modelos gratuitos, tente de novo em alguns minutos.`;
+    const lugares = await buscarNoMaps({ termo: NICHOS[nicho], cidade, depth: 6, tempoMax: 180 });
+    res.candidatos = lugares.length;
+    if (!lugares.length) {
+      res.aviso = `O Google Maps não trouxe ${NICHOS[nicho]} em ${cidade}. Tente outra cidade ou segmento.`;
       return res;
     }
 
     const existentes = await listarLeads();
     const nomes = new Set(existentes.map((l) => slugNome(l.nome)));
     const dominios = new Set(existentes.map((l) => hostnameDe(l.site)).filter(Boolean));
-    Object.assign(progresso, { fase: "auditando", total: lista.length });
+    Object.assign(progresso, { fase: "auditando", total: lugares.length });
 
-    const add = async (c: Candidato, frente: Frente, porque: string, contatos: Contatos = {}) => {
-      const fone = c.telefone || contatos.whatsapp || contatos.telefone || "";
-      const extra = [c.nota ? `nota Google ${String(c.nota).replace(".", ",")}` : "", c.avaliacoes ? `${c.avaliacoes} avaliações` : "", c.instagram ? `Instagram: ${c.instagram}` : ""].filter(Boolean).join(" · ");
+    const descartar = (l: Lugar, motivo: string) => { res.descartados.push({ nome: l.nome, motivo }); };
+
+    const add = async (l: Lugar, porque: string, canais: { whatsapp: string; email: string; instagram: string }) => {
+      const extra = [l.nota ? `nota Google ${String(l.nota).replace(".", ",")}` : "", l.avaliacoes ? `${l.avaliacoes} avaliações` : "", l.endereco].filter(Boolean).join(" · ");
       const novo = await pipelineOp({
-        action: "add", nome: c.nome, segmento: nicho, cidade,
-        nota: c.nota ? String(c.nota).replace(".", ",") : "", avaliacoes: c.avaliacoes ? String(c.avaliacoes) : "",
-        site: c.site, contato: fone, whatsapp: contatos.whatsapp || fone, email: contatos.email || "",
-        categoria: "ia", frente,
-        porque: `${FRENTE_LABEL[frente]}. ${porque} Encontrado via busca na web${extra ? ` · ${extra}` : ""}.`,
-      });
-      res.adicionados.push(c.nome);
-      res.porFrente[frente]++;
-      nomes.add(slugNome(c.nome));
-      return novo as { id?: string };
+        action: "add", nome: l.nome, segmento: nicho, cidade,
+        nota: l.nota ? String(l.nota).replace(".", ",") : "", avaliacoes: l.avaliacoes ? String(l.avaliacoes) : "",
+        site: l.site, contato: canais.whatsapp, whatsapp: canais.whatsapp, email: canais.email, instagram: canais.instagram,
+        categoria: "maps", frente: FRENTE,
+        porque: `${FRENTE_LABEL}. ${porque} Encontrado no Google Maps${extra ? ` · ${extra}` : ""}.`,
+      }) as { id?: string };
+      res.adicionados.push(l.nome);
+      res.porFrente[FRENTE]++;
+      nomes.add(slugNome(l.nome));
+      return novo;
+    };
+
+    const tratar = async (l: Lugar) => {
+      if (nomes.has(slugNome(l.nome))) return descartar(l, "já está no funil");
+      if (!l.site) return descartar(l, "sem site próprio no Google Maps");
+      const host = hostnameDe(l.site);
+      if (host && dominios.has(host)) return descartar(l, "domínio já está no funil");
+
+      const diag = await diagnosticarSite(l.site);
+      res.auditados++;
+      progresso.feito = res.auditados;
+      if (diag.estado !== "ok") return descartar(l, `site não abre: ${diag.motivo}`);
+
+      const ux = auditarUX(diag.html, l.site);
+      if (ux.pontuacao >= NOTA_MINIMA_SITE || !ux.temProblemaDeUso) {
+        return descartar(l, `UX/UI ${ux.pontuacao}/100: site aceitável`);
+      }
+
+      const redes = extrairRedes(diag.html);
+      if (!redes.instagram) return descartar(l, `UX/UI ${ux.pontuacao}/100, mas o site não linka Instagram`);
+      const ig = await validarInstagram(redes.instagram);
+      if (ig.status === "nao-existe") return descartar(l, "Instagram linkado no site não existe");
+
+      const wa = validarWhatsapp(l.telefone, redes.whatsapp);
+      if (wa.status === "sem-numero") return descartar(l, "WhatsApp: sem telefone no Google Maps");
+      if (wa.status === "fixo") return descartar(l, "WhatsApp: o telefone é fixo, e fixo não tem WhatsApp");
+
+      const email = l.emails[0] || extrairEmail(diag.html);
+      const analise = await analisarLead({
+        id: slugNome(l.nome), nome: l.nome, cidade, site: l.site,
+        nota: l.nota || 0, avaliacoes: l.avaliacoes || 0,
+        whatsapp: wa.numero, contato: wa.numero, email,
+      }).catch(() => null);
+
+      const problemas = ux.falhas.slice(0, 4).map((f) => f.rotulo).join("; ");
+      const waTxt = wa.status === "confirmado-no-site"
+        ? "número publicado como WhatsApp no próprio site"
+        : "celular no formato válido (não confirmado no WhatsApp)";
+      const igTxt = ig.status === "ativo" ? "perfil confirmado" : "linkado no site, perfil não confirmado pelo Instagram";
+      const novo = await add(
+        l,
+        `UX/UI ${ux.pontuacao}/100. Problemas: ${problemas}. WhatsApp: ${waTxt}. Instagram: @${ig.handle}, ${igTxt}.` +
+          (analise ? ` Presença digital ${analise.pontuacao}/100.` : ""),
+        { whatsapp: wa.numero, email, instagram: redes.instagram },
+      );
+      // Reaproveita a análise já calculada na ficha nova.
+      if (novo?.id && analise) {
+        try {
+          analise.id = novo.id;
+          await salvarAnalise(analise);
+          await gravarAnaliseNaFicha(novo.id, resumoMd(analise), analise.pontuacao, analise);
+        } catch { /* a análise pode ser refeita na ficha */ }
+      }
     };
 
     // Lotes pequenos em paralelo: a requisição tem tempo limitado na hospedagem.
-    for (let i = 0; i < lista.length && res.adicionados.length < limite; i += 4) {
-      await Promise.allSettled(lista.slice(i, i + 4).map(async (c) => {
-        try {
-          if (nomes.has(slugNome(c.nome))) { res.descartados.push({ nome: c.nome, motivo: "já está no funil" }); return; }
-          const host = hostnameDe(c.site);
-          if (host && dominios.has(host)) { res.descartados.push({ nome: c.nome, motivo: "domínio já está no funil" }); return; }
-
-          // Frente 1: sem site próprio
-          if (!c.site) {
-            if (!frentes.has("sem-gmn")) { res.descartados.push({ nome: c.nome, motivo: "sem site (frente não selecionada)" }); return; }
-            if (!c.telefone) { res.descartados.push({ nome: c.nome, motivo: "sem site e sem telefone: sem como abordar" }); return; }
-            await add(c, "sem-gmn", "Não tem site próprio; a presença depende do Google e das redes.");
-            return;
-          }
-
-          const diag = await diagnosticarSite(c.site);
-          res.auditados++;
-          progresso.feito = res.auditados;
-          if (diag.estado === "inexistente") { res.descartados.push({ nome: c.nome, motivo: `${diag.motivo} (possível dado inventado)` }); return; }
-
-          // Frente 2: site quebrado ou fora do ar
-          if (diag.estado !== "ok") {
-            if (!frentes.has("site-quebrado")) { res.descartados.push({ nome: c.nome, motivo: `${diag.motivo} (frente não selecionada)` }); return; }
-            if (!c.telefone) { res.descartados.push({ nome: c.nome, motivo: `${diag.motivo}, mas sem telefone para abordar` }); return; }
-            await add(c, "site-quebrado", `Site: ${diag.motivo}.`);
-            return;
-          }
-
-          // Frente 3: site no ar, mas mal construído
-          if (!frentes.has("site-ruim")) { res.descartados.push({ nome: c.nome, motivo: "site no ar (frente não selecionada)" }); return; }
-          const aud = auditar(diag.html);
-          const temContato = !!(c.telefone || aud.contatos.whatsapp || aud.contatos.telefone || aud.contatos.email);
-          if (!temContato) { res.descartados.push({ nome: c.nome, motivo: "nenhum telefone, WhatsApp ou e-mail" }); return; }
-          // "Sem telefone clicável" e "sem descrição" sozinhos não justificam abordagem.
-          const fortes = aud.problemas.filter((p) => !/sem telefone clicável|sem descrição/.test(p));
-          let a: Awaited<ReturnType<typeof analisarLead>> | null = null;
-          try {
-            a = await analisarLead({
-              id: slugNome(c.nome), nome: c.nome, cidade, site: c.site,
-              nota: c.nota || 0, avaliacoes: c.avaliacoes || 0,
-              whatsapp: aud.contatos.whatsapp || c.telefone, contato: c.telefone, email: aud.contatos.email || "",
-            });
-          } catch { /* sem análise, decide só pela auditoria */ }
-          const pts = a?.pontuacao ?? 100;
-          const entra = fortes.length >= 2 || pts <= 60 || (fortes.length >= 1 && pts <= 75);
-          if (!entra) {
-            res.descartados.push({ nome: c.nome, motivo: `site razoável · presença ${a ? pts + "/100" : "?"}${aud.problemas.length ? ` (${aud.problemas.join("; ")})` : ""}` });
-            return;
-          }
-          const novo = await add(c, "site-ruim", `${a ? `Presença ${pts}/100. ` : ""}Auditoria: ${aud.problemas.join("; ")}.`, aud.contatos);
-          // Reaproveita a análise já calculada na ficha nova.
-          if (novo?.id && a) {
-            try {
-              a.id = novo.id;
-              await salvarAnalise(a);
-              await gravarAnaliseNaFicha(novo.id, resumoMd(a), a.pontuacao, a);
-            } catch { /* a análise pode ser refeita na ficha */ }
-          }
-        } catch (e) {
-          res.erros.push({ nome: c.nome, motivo: e instanceof Error ? e.message : "erro" });
-        }
+    for (let i = 0; i < lugares.length && res.adicionados.length < limite; i += 4) {
+      await Promise.allSettled(lugares.slice(i, i + 4).map(async (l) => {
+        try { await tratar(l); } catch (e) { res.erros.push({ nome: l.nome, motivo: e instanceof Error ? e.message : "erro" }); }
       }));
     }
     return res;
@@ -338,5 +215,5 @@ export async function prospectar(op: { nicho?: string; cidade?: string; limite?:
 }
 
 export function statusProspector() {
-  return { openrouter: !!OPENROUTER_KEY, modelos: PREFERIDOS, progresso };
+  return { scraper: scraperConfigurado(), progresso };
 }

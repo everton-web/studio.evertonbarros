@@ -90,7 +90,7 @@ function primeiro(html: string, re: RegExp, filtro?: (u: string) => boolean): st
 }
 const NAO_PERFIL = /\/(sharer|share|intent|plugins|dialog|tr\?|p\/|reel\/|explore|accounts|embed)/i;
 
-function extrairRedes(html: string) {
+export function extrairRedes(html: string) {
   return {
     instagram: primeiro(html, /(?:https?:\/\/)?(?:www\.)?instagram\.com\/[A-Za-z0-9_.]{2,30}\/?/gi, (u) => !NAO_PERFIL.test(u)),
     facebook: primeiro(html, /(?:https?:\/\/)?(?:www\.|m\.)?facebook\.com\/[A-Za-z0-9_.\-/]{3,80}/gi, (u) => !NAO_PERFIL.test(u) && !/facebook\.com\/(tr|plugins)/.test(u)),

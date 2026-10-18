@@ -29,7 +29,7 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
   if (!(await isAuthed()) && !tokenOk(req)) return NextResponse.json({ error: "não autenticado" }, { status: 401 });
-  let body: { nicho?: string; cidade?: string; limite?: number; frentes?: string[] } = {};
+  let body: { nicho?: string; cidade?: string; limite?: number } = {};
   try { body = await req.json(); } catch { /* usa padrões */ }
   try {
     const resumo = await prospectar(body);
