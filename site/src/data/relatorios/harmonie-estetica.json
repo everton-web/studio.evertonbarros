@@ -1,0 +1,43 @@
+{
+  "slug": "harmonie-estetica",
+  "empresa": "Harmonie Estética",
+  "segmento": "clinica",
+  "cidade": "Curitiba",
+  "geradoEm": "2026-10-02",
+  "pontuacao": 62,
+  "google": {
+    "nota": null,
+    "avaliacoes": null,
+    "categorias": [],
+    "mapsUrl": "https://www.google.com/maps/search/?api=1&query=Harmonie%20Est%C3%A9tica%20Curitiba"
+  },
+  "site": {
+    "url": "https://www.harmonieestetica.com.br",
+    "ok": false
+  },
+  "redes": {
+    "instagram": "",
+    "facebook": "",
+    "tiktok": "",
+    "linkedin": "",
+    "youtube": ""
+  },
+  "faltas": [
+    {
+      "area": "site",
+      "tag": "Site no ar",
+      "oportunidade": "Ter um site no ar e no seu nome, para quem procura clínica achar um lugar para clicar."
+    },
+    {
+      "area": "contato",
+      "tag": "Contato em um clique",
+      "oportunidade": "Ter um jeito de contato em um clique para quem se interessa chamar na hora."
+    },
+    {
+      "area": "redes",
+      "tag": "Instagram",
+      "oportunidade": "Ligar seu Instagram ao site para quem te procura continuar no seu perfil."
+    }
+  ],
+  "fortes": []
+}

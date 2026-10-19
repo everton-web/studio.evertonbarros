@@ -1,0 +1,61 @@
+{
+  "slug": "stetic-class",
+  "empresa": "Complexo SC",
+  "segmento": "clinica",
+  "cidade": "Fortaleza",
+  "geradoEm": "2026-10-02",
+  "pontuacao": 64,
+  "google": {
+    "nota": null,
+    "avaliacoes": null,
+    "categorias": [],
+    "mapsUrl": "https://www.google.com/maps/search/?api=1&query=Complexo%20SC%20Stetic%20Class%20Fortaleza"
+  },
+  "site": {
+    "url": "https://www.steticclass.com.br/",
+    "ok": true
+  },
+  "redes": {
+    "instagram": "",
+    "facebook": "",
+    "tiktok": "",
+    "linkedin": "",
+    "youtube": ""
+  },
+  "faltas": [
+    {
+      "area": "site",
+      "tag": "Descrição no Google",
+      "oportunidade": "Aparecer com uma descrição clara e convidativa quando alguém busca pelo seu nome."
+    },
+    {
+      "area": "rastreio",
+      "tag": "Google Analytics",
+      "oportunidade": "Saber de onde vêm os pacientes para investir no que realmente funciona."
+    },
+    {
+      "area": "rastreio",
+      "tag": "Meta Pixel",
+      "oportunidade": "Reimpactar quem já visitou seu site, transformando interesse em agendamento."
+    },
+    {
+      "area": "redes",
+      "tag": "Instagram",
+      "oportunidade": "Ligar seu Instagram ao site para quem te procura continuar no seu perfil."
+    },
+    {
+      "area": "site",
+      "tag": "Negócio local",
+      "oportunidade": "Aparecer no Google como o negócio local da sua região, do jeito que os buscadores entendem melhor."
+    },
+    {
+      "area": "site",
+      "tag": "WhatsApp · Instagram",
+      "oportunidade": "Link com imagem bonita ao compartilhar no WhatsApp e no Instagram."
+    }
+  ],
+  "fortes": [
+    "Site no ar, com HTTPS e versão para celular",
+    "WhatsApp linkado no site"
+  ]
+}

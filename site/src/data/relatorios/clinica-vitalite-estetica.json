@@ -1,0 +1,66 @@
+{
+  "slug": "clinica-vitalite-estetica",
+  "empresa": "Clínica Vitalité Estética",
+  "segmento": "clinica",
+  "cidade": "São Paulo",
+  "geradoEm": "2026-10-01",
+  "pontuacao": 52,
+  "google": {
+    "nota": null,
+    "avaliacoes": null,
+    "categorias": [],
+    "mapsUrl": "https://www.google.com/maps/search/?api=1&query=Cl%C3%ADnica%20Vitalit%C3%A9%20Est%C3%A9tica%20S%C3%A3o%20Paulo%2FSP"
+  },
+  "site": {
+    "url": "https://clinicavitalite.com.br/",
+    "ok": true
+  },
+  "redes": {
+    "instagram": "https://www.instagram.com/clinicamedicavitalite/",
+    "facebook": "https://www.facebook.com/pg/cursodedelineamentodesobrancelha/about/",
+    "tiktok": "",
+    "linkedin": "",
+    "youtube": ""
+  },
+  "faltas": [
+    {
+      "area": "contato",
+      "tag": "Contato em um clique",
+      "oportunidade": "Ter um jeito de contato em um clique para quem se interessa chamar na hora."
+    },
+    {
+      "area": "site",
+      "tag": "Busca local",
+      "oportunidade": "Ser encontrado por quem procura clínica na sua região, com um título que chama atenção nos resultados."
+    },
+    {
+      "area": "site",
+      "tag": "Descrição no Google",
+      "oportunidade": "Aparecer com uma descrição clara e convidativa quando alguém busca pelo seu nome."
+    },
+    {
+      "area": "rastreio",
+      "tag": "Google Analytics",
+      "oportunidade": "Saber de onde vêm os pacientes para investir no que realmente funciona."
+    },
+    {
+      "area": "rastreio",
+      "tag": "Meta Pixel",
+      "oportunidade": "Reimpactar quem já visitou seu site, transformando interesse em agendamento."
+    },
+    {
+      "area": "site",
+      "tag": "Negócio local",
+      "oportunidade": "Aparecer no Google como o negócio local da sua região, do jeito que os buscadores entendem melhor."
+    },
+    {
+      "area": "site",
+      "tag": "WhatsApp · Instagram",
+      "oportunidade": "Link com imagem bonita ao compartilhar no WhatsApp e no Instagram."
+    }
+  ],
+  "fortes": [
+    "Site no ar, com HTTPS e versão para celular",
+    "Instagram linkado no site"
+  ]
+}

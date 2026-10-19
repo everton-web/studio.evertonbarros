@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description"
+    content="Everton Brito Barros — Webdesigner, UX/UI Designer em Salvador, BA. Páginas de vendas, sites institucionais, consultorias e mentorias.">
+  <title>Everton Brito — Webdesigner · UX/UI Designer</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap"
+    rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/style.css?v=17">
+
+  <!-- Favicons -->
+  <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+  <link rel="icon" type="image/png" href="img/favicon.png">
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+
+  <!-- Microsoft Clarity — mapas de calor e gravações (ID ynkvl1zisv) -->
+  <script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+      c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+      t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+      y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ynkvl1zisv");
+  </script>
+</head>
+
+<body>
+
+  <!-- ===== SVG DEFS (Concave Equilateral Triangle) ===== -->
+  <svg xmlns="http://www.w3.org/2000/svg" style="display:none;">
+    <defs>
+      <symbol id="icon-triangle" viewBox="0 0 100 100">
+        <path d="M50 10 Q58.6 45 84.6 70 Q50 60 15.4 70 Q41.4 45 50 10Z" fill="currentColor" />
+      </symbol>
+    </defs>
+  </svg>
+
+  <!-- ===== NAVBAR ===== -->
+  <header class="navbar" id="navbar">
+    <div class="container navbar__inner">
+      <a href="#" class="navbar__logo">
+        <svg class="brand-icon" aria-hidden="true">
+          <use href="#icon-triangle" />
+        </svg>
+        everton.
+      </a>
+
+      <nav class="navbar__nav" id="nav-links">
+        <a href="#hero" class="navbar__link active">Home</a>
+        <a href="#sobre" class="navbar__link" data-i18n="nav.about">Sobre</a>
+        <a href="#servicos" class="navbar__link" data-i18n="nav.services">Serviços</a>
+        <a href="#portfolio" class="navbar__link" data-i18n="nav.portfolio">Portfólio</a>
+      </nav>
+
+      <div class="navbar__actions">
+        <button class="navbar__lang" id="lang-toggle" aria-label="Alternar idioma">EN</button>
+        <a href="#contato" class="btn btn--outline" data-i18n="nav.cta">Contato</a>
+      </div>
+
+      <button class="navbar__toggle" id="menu-toggle" aria-label="Menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ===== MOBILE MENU ===== -->
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="#sobre" class="mobile-menu__link" data-i18n="nav.about">Sobre</a>
+    <a href="#servicos" class="mobile-menu__link" data-i18n="nav.services">Serviços</a>
+    <a href="#portfolio" class="mobile-menu__link" data-i18n="nav.portfolio">Portfólio</a>
+    <a href="#contato" class="mobile-menu__link" data-i18n="nav.contact">Contato</a>
+    <button class="navbar__lang" id="lang-toggle-mobile" aria-label="Alternar idioma">EN</button>
+  </div>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero section--dark" id="hero">
+    <div class="container hero__content">
+      <div class="hero__top">
+        <div class="hero__intro">
+          <div class="hero__label">
+            <svg class="brand-icon brand-icon--sm" style="color: var(--accent);" aria-hidden="true">
+              <use href="#icon-triangle" />
+            </svg>
+            <span class="text-label" data-i18n="hero.available">Disponível globalmente</span>
+          </div>
+
+          <h1 class="heading-display hero__title" data-i18n="hero.title">
+            Criando<br><span class="serif">experiências</span><br>digitais
+          </h1>
+
+          <p class="text-body hero__description" data-i18n="hero.description">
+            Transformo ideias em sites e landing pages estratégicas que conectam
+            marcas a pessoas em qualquer lugar do mundo.
+          </p>
+
+          <div class="hero__actions">
+            <a href="#contato" class="btn btn--primary" data-i18n="hero.cta">
+              Solicite um Orçamento
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14" />
+                <path d="m12 5 7 7-7 7" />
+              </svg>
+            </a>
+          </div>
+        </div>
+
+        <div class="hero__floating-card">
+          <svg class="brand-icon brand-icon--sm" style="color: var(--accent); margin-bottom: var(--space-md);"
+            aria-hidden="true">
+            <use href="#icon-triangle" />
+          </svg>
+          <p class="hero__floating-card__title" data-i18n="hero.card_title">UX & UI Design</p>
+          <p class="hero__floating-card__desc" data-i18n="hero.card_desc">Layouts modernos e centrados no usuário.
+          </p>
+        </div>
+      </div>
+
+      <div class="hero__kinetic" aria-hidden="true">
+        everton<span class="serif">.</span>brito
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ABOUT / STATEMENT ===== -->
+  <section class="section section--dark-soft statement-section" id="sobre">
+    <div class="container reveal">
+      <div class="section__label">
+        <svg class="brand-icon brand-icon--sm" style="color: var(--accent);" aria-hidden="true">
+          <use href="#icon-triangle" />
+        </svg>
+        <span class="text-label" data-i18n="about.label">Sobre</span>
+      </div>
+
+      <p class="statement" data-i18n="about.statement">
+        <strong>Everton Brito</strong> — é parceiro estratégico de quem busca
+        <span class="serif">resultado</span>. De iniciantes a grandes players,
+        entrego projetos que
+        <svg class="brand-icon inline-icon" style="color: var(--accent);" aria-hidden="true">
+          <use href="#icon-triangle" />
+        </svg>
+        <strong>funcionam</strong> e impulsam negócios no
+        <span class="serif">digital</span>
+      </p>
+
+      <p class="text-sm" style="text-align: center; max-width: 500px; margin: var(--space-2xl) auto 0;"
+        data-i18n="about.sub">
+        6+ anos guiando clientes de diversos níveis de consciência digital.
+        Seja para lançar sua primeira página ou escalar uma operação complexa,
+        o objetivo é um só: clareza e conversão.
+      </p>
+    </div>
+  </section>
+
+  <!-- ===== SERVICES ===== -->
+  <section class="section section--dark" id="servicos">
+    <div class="container">
+      <div class="section__label reveal">
+        <svg class="brand-icon brand-icon--sm" style="color: var(--accent);" aria-hidden="true">
+          <use href="#icon-triangle" />
+        </svg>
+        <span class="text-label" data-i18n="services.label">Serviços</span>
+      </div>
+      <h2 class="heading-1 reveal" data-i18n="services.title" style="margin-bottom: var(--space-md);">O que eu <span
+          class="serif">faço</span></h2>
+
+      <div class="services__grid reveal-stagger">
+        <!-- Service 1 -->
+        <div class="service-card">
+          <div class="service-card__icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="3" width="20" height="14" rx="2" />
+              <path d="M8 21h8" />
+              <path d="M12 17v4" />
+            </svg>
+          </div>
+          <h3 class="heading-3 service-card__title" data-i18n="services.s1.title">Páginas de Vendas</h3>
+          <p class="service-card__desc" data-i18n="services.s1.desc">Landing pages persuasivas e de alta conversão.
+            Estrutura validada para
+            capturar leads e maximizar o ROI do seu tráfego.</p>
+        </div>
+
+        <!-- Service 2 -->
+        <div class="service-card">
+          <div class="service-card__icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2L2 7l10 5 10-5-10-5z" />
+              <path d="M2 17l10 5 10-5" />
+              <path d="M2 12l10 5 10-5" />
+            </svg>
+          </div>
+          <h3 class="heading-3 service-card__title" data-i18n="services.s2.title">UX / UI Design</h3>
+          <p class="service-card__desc" data-i18n="services.s2.desc">Layouts modernos que unem estética e função. Do
+            wireframe ao protótipo final, garantindo usabilidade impecável.</p>
+        </div>
+
+        <!-- Service 3 -->
+        <div class="service-card">
+          <div class="service-card__icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path
+                d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+            </svg>
+          </div>
+          <h3 class="heading-3 service-card__title" data-i18n="services.s3.title">Sites Institucionais</h3>
+          <p class="service-card__desc" data-i18n="services.s3.desc">Presença digital sólida e profissional. Sites
+            rápidos, otimizados e responsivos que transmitem autoridade imediata.</p>
+        </div>
+
+        <!-- Service 4 -->
+        <div class="service-card">
+          <div class="service-card__icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
+              <polyline points="14,2 14,8 20,8" />
+            </svg>
+          </div>
+          <h3 class="heading-3 service-card__title" data-i18n="services.s4.title">Páginas de Captura</h3>
+          <p class="service-card__desc" data-i18n="services.s4.desc">Squeeze pages focadas em uma única ação. Design
+            minimalista e direto ao ponto para aumentar sua taxa de cadastro.</p>
+        </div>
+
+        <!-- Service 5 -->
+        <div class="service-card">
+          <div class="service-card__icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10" />
+              <path d="M12 16v-4" />
+              <path d="M12 8h.01" />
+            </svg>
+          </div>
+          <h3 class="heading-3 service-card__title" data-i18n="services.s5.title">Consultoria</h3>
+          <p class="service-card__desc" data-i18n="services.s5.desc">Análise técnica e estratégica do seu produto
+            digital. Identificação de gargalos de usabilidade que estão custando vendas.</p>
+        </div>
+
+        <!-- Service 6 -->
+        <div class="service-card">
+          <div class="service-card__icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+            </svg>
+          </div>
+          <h3 class="heading-3 service-card__title" data-i18n="services.s6.title">Mentoria</h3>
+          <p class="service-card__desc" data-i18n="services.s6.desc">Orientação personalizada para designers e
+            infoprodutores que desejam elevar o nível visual e técnico de seus projetos.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PORTFOLIO ===== -->
+  <section class="section section--dark-soft" id="portfolio">
+    <div class="container">
+      <div class="portfolio__header reveal">
+        <div>
+          <div class="section__label">
+            <svg class="brand-icon brand-icon--sm" style="color: var(--accent);" aria-hidden="true">
+              <use href="#icon-triangle" />
+            </svg>
+            <span class="text-label" data-i18n="portfolio.label">Portfólio</span>
+          </div>
+          <h2 class="heading-1" data-i18n="portfolio.title">Projetos <span class="serif">selecionados</span></h2>
+        </div>
+        <a href="#contato" class="btn btn--outline" data-i18n="portfolio.cta">
+          Iniciar um projeto
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14" />
+            <path d="m12 5 7 7-7 7" />
+          </svg>
+        </a>
+      </div>
+
+      <div class="portfolio__grid reveal-stagger">
+        <!-- Project 1 — AGFP Transportes -->
+        <a href="https://www.behance.net/gallery/241985859/AGFP-Transportes-One-Page" class="project-card"
+          target="_blank" rel="noopener">
+          <img src="img/portfolio/agfp-transportes.png" alt="AGFP Transportes — One Page" class="project-card__image"
+            loading="lazy">
+          <div class="project-card__overlay">
+            <span class="project-card__category">One Page · Web Design</span>
+            <h3 class="project-card__title">AGFP Transportes</h3>
+          </div>
+        </a>
+
+        <!-- Project 2 — Dental Class -->
+        <a href="https://www.behance.net/gallery/241985255/Dental-Class-One-Page" class="project-card" target="_blank"
+          rel="noopener">
+          <img src="img/portfolio/dental-class.png" alt="Dental Class — One Page" class="project-card__image"
+            loading="lazy">
+          <div class="project-card__overlay">
+            <span class="project-card__category">One Page · Web Design</span>
+            <h3 class="project-card__title">Dental Class</h3>
+          </div>
+        </a>
+
+        <!-- Project 3 — Casa de Repouso de Joinville -->
+        <a href="https://www.behance.net/gallery/241967889/Casa-de-Repouso-de-Joinville-One-Page" class="project-card"
+          target="_blank" rel="noopener">
+          <img src="img/portfolio/casa-repouso.png" alt="Casa de Repouso de Joinville — One Page"
+            class="project-card__image" loading="lazy">
+          <div class="project-card__overlay">
+            <span class="project-card__category">One Page · UX Design</span>
+            <h3 class="project-card__title">Casa de Repouso de Joinville</h3>
+          </div>
+        </a>
+
+        <!-- Project 4 — Allmeida Mídias -->
+        <a href="https://www.behance.net/gallery/217732821/Allmeida-midias-Landing-Page" class="project-card"
+          target="_blank" rel="noopener">
+          <img src="img/portfolio/allmeida-midias.png" alt="Allmeida Mídias — Landing Page" class="project-card__image"
+            loading="lazy">
+          <div class="project-card__overlay">
+            <span class="project-card__category">Landing Page</span>
+            <h3 class="project-card__title">Allmeida Mídias</h3>
+          </div>
+        </a>
+
+        <!-- Project 5 — Balan Arquitetos -->
+        <a href="https://www.behance.net/gallery/200814145/Estudo-de-Marca-Balan-Arquitetos-Associados"
+          class="project-card" target="_blank" rel="noopener">
+          <img src="img/portfolio/balan-arquitetos.png" alt="Balan Arquitetos — Brand Identity"
+            class="project-card__image" loading="lazy">
+          <div class="project-card__overlay">
+            <span class="project-card__category">Brand Identity</span>
+            <h3 class="project-card__title">Balan Arquitetos</h3>
+          </div>
+        </a>
+
+        <!-- Project 6 — iPower -->
+        <a href="https://www.behance.net/gallery/198869793/iPower-Support-Shop-Lab-One-Page" class="project-card"
+          target="_blank" rel="noopener">
+          <img src="img/portfolio/ipower.png" alt="iPower — One Page" class="project-card__image" loading="lazy">
+          <div class="project-card__overlay">
+            <span class="project-card__category">One Page · Web Design</span>
+            <h3 class="project-card__title">iPower</h3>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CTA / CONTACT ===== -->
+  <section class="section section--dark cta-section" id="contato">
+    <div class="container">
+      <div class="reveal">
+        <div class="section__label" style="justify-content: center;">
+          <svg class="brand-icon brand-icon--sm" style="color: var(--accent);" aria-hidden="true">
+            <use href="#icon-triangle" />
+          </svg>
+          <span class="text-label" data-i18n="cta.label">Contato</span>
+        </div>
+        <h2 class="heading-1" data-i18n="cta.title">Vamos criar algo<br><span class="serif">incrível</span> juntos?</h2>
+        <p class="text-body" data-i18n="cta.description" style="max-width: 500px; margin: 0 auto var(--space-2xl);">
+          Tem um desafio de negócio? Preencha o formulário abaixo e
+          vamos discutir a solução ideal via WhatsApp.
+        </p>
+      </div>
+
+      <form class="contact-form reveal" id="contact-form">
+        <div class="form-group">
+          <label for="name" data-i18n="form.name_label">Nome</label>
+          <input type="text" id="name" name="name" placeholder="Seu nome" data-i18n-placeholder="form.name_placeholder"
+            required>
+        </div>
+        <div class="form-group">
+          <label for="email" data-i18n="form.email_label">Email</label>
+          <input type="email" id="email" name="email" placeholder="seu@email.com" required>
+        </div>
+        <div class="form-group">
+          <label for="whatsapp" data-i18n="form.whatsapp_label">WhatsApp</label>
+          <input type="tel" id="whatsapp" name="whatsapp" placeholder="DDD + Número"
+            data-i18n-placeholder="form.whatsapp_placeholder" maxlength="15" required>
+        </div>
+        <div class="form-group">
+          <label for="project" data-i18n="form.project_label">Tipo de Projeto</label>
+          <input type="text" id="project" name="project" placeholder="Ex: Landing Page, Site Institucional..."
+            data-i18n-placeholder="form.project_placeholder">
+        </div>
+        <div class="form-group">
+          <label for="message" data-i18n="form.message_label">Mensagem</label>
+          <textarea id="message" name="message" placeholder="Conte um pouco sobre seu projeto..."
+            data-i18n-placeholder="form.message_placeholder"></textarea>
+        </div>
+        <button type="submit" class="btn btn--primary" data-i18n="form.submit">
+          Enviar mensagem
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14" />
+            <path d="m12 5 7 7-7 7" />
+          </svg>
+        </button>
+      </form>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="container footer__inner">
+      <p class="footer__copy">© 2026 Everton Brito. <span data-i18n="footer.rights">Todos os direitos reservados.</span>
+      </p>
+
+
+      <a href="#hero" class="footer__back-top" data-i18n="footer.top">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="m18 15-6-6-6 6" />
+        </svg>
+        Voltar ao topo
+      </a>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/main.js?v=4"></script>
+</body>
+
+</html>

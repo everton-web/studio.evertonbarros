@@ -1,0 +1,48 @@
+{
+  "slug": "restaurante-casa-de-tereza",
+  "empresa": "Restaurante Casa de Tereza",
+  "segmento": "outro",
+  "cidade": "Salvador",
+  "geradoEm": "2026-10-01",
+  "pontuacao": 82,
+  "google": {
+    "nota": null,
+    "avaliacoes": null,
+    "categorias": [],
+    "mapsUrl": "https://www.google.com/maps/search/?api=1&query=Restaurante%20Casa%20de%20Tereza%20Salvador%2FBA"
+  },
+  "site": {
+    "url": "https://casadetereza.com.br/",
+    "ok": true
+  },
+  "redes": {
+    "instagram": "https://www.instagram.com/casadetereza_/",
+    "facebook": "https://www.facebook.com/CasaDeTereza/",
+    "tiktok": "",
+    "linkedin": "",
+    "youtube": ""
+  },
+  "faltas": [
+    {
+      "area": "site",
+      "tag": "Descrição no Google",
+      "oportunidade": "Aparecer com uma descrição clara e convidativa quando alguém busca pelo seu nome."
+    },
+    {
+      "area": "site",
+      "tag": "Negócio local",
+      "oportunidade": "Aparecer no Google como o negócio local da sua região, do jeito que os buscadores entendem melhor."
+    },
+    {
+      "area": "site",
+      "tag": "WhatsApp · Instagram",
+      "oportunidade": "Link com imagem bonita ao compartilhar no WhatsApp e no Instagram."
+    }
+  ],
+  "fortes": [
+    "Site no ar, com HTTPS e versão para celular",
+    "Já tem algum rastreamento instalado",
+    "WhatsApp linkado no site",
+    "Instagram linkado no site"
+  ]
+}

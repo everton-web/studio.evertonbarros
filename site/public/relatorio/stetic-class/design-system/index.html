@@ -1,0 +1,1460 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Complexo SC Design System</title>
+<meta name="robots" content="noindex, nofollow">
+<base href="/relatorio/stetic-class/design-system/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* =========================================================
+   TOKENS DO SISTEMA (prontos para o site)
+   ========================================================= */
+:root{
+  /* cor */
+  --c-marfim:#F7F2EA;          /* fundo principal */
+  --c-areia:#EDE3D5;           /* fundo de seção alternada */
+  --c-linho:#FFFDF9;           /* superfície de card */
+  --c-linha:#E3D7C7;           /* bordas e divisores */
+  --c-tinta:#2B1B1F;           /* texto principal */
+  --c-tinta-suave:#6A5558;     /* texto secundário */
+  --c-vinho:#5E1A2E;           /* assinatura: CTA, destaques */
+  --c-vinho-profundo:#2E0D17;  /* seções escuras pontuais, rodapé */
+  --c-champanhe:#B8976A;       /* detalhe: fios, ícones, número (nunca texto em fundo claro) */
+  --c-champanhe-texto:#7A5B33; /* eyebrow e registros em fundo claro */
+  --c-champanhe-claro:#D8C29C; /* texto de apoio em fundo escuro */
+  --c-whats:#1FA855;           /* só no ícone do WhatsApp */
+
+  /* tipografia */
+  --f-display:"Newsreader", Georgia, serif;
+  --f-texto:"Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --t-display:clamp(2.75rem, 1.9rem + 3.6vw, 4.75rem);  /* 44 → 76 */
+  --t-h1:clamp(2.375rem, 1.8rem + 2.4vw, 3.5rem);       /* 38 → 56 */
+  --t-h2:clamp(2rem, 1.6rem + 1.6vw, 2.75rem);          /* 32 → 44 */
+  --t-h3:clamp(1.5rem, 1.35rem + .6vw, 1.75rem);        /* 24 → 28 */
+  --t-h4:clamp(1.0625rem, 1rem + .2vw, 1.25rem);        /* 17 → 20 */
+  --t-lead:clamp(1.0625rem, 1rem + .3vw, 1.1875rem);    /* 17 → 19 */
+  --t-corpo:1rem;                                        /* 16 */
+  --t-legenda:.8125rem;                                  /* 13 */
+  --t-eyebrow:clamp(.6875rem, .66rem + .1vw, .75rem);   /* 11 → 12 */
+  --t-botao:.9375rem;                                    /* 15 */
+
+  /* espaço (base 4) */
+  --s-1:4px; --s-2:8px; --s-3:12px; --s-4:16px; --s-5:24px; --s-6:32px;
+  --s-7:48px; --s-8:64px; --s-9:96px; --s-10:128px; --s-11:160px;
+  --secao:clamp(72px, 4rem + 4vw, 128px);  /* respiro vertical entre seções */
+
+  /* grid */
+  --conteudo:1240px; --colunas:12; --gutter:24px; --margem:clamp(20px, 4vw, 64px);
+
+  /* raios */
+  --r-xs:4px; --r-s:10px; --r-m:18px; --r-l:28px; --r-pill:999px;
+  --r-arco:999px 999px var(--r-m) var(--r-m); /* herança do card antigo: o arco */
+
+  /* sombra */
+  --sh-1:0 1px 2px rgba(43,27,31,.05), 0 10px 28px -16px rgba(43,27,31,.22);
+  --sh-2:0 2px 4px rgba(43,27,31,.06), 0 24px 48px -24px rgba(43,27,31,.30);
+
+  /* movimento */
+  --ease:cubic-bezier(.22,1,.36,1);
+  --d-1:200ms; --d-2:400ms; --d-3:700ms; --d-4:1200ms;
+}
+
+/* =========================================================
+   BASE DO DOCUMENTO
+   ========================================================= */
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--c-marfim);color:var(--c-tinta);font-family:var(--f-texto);font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased}
+img{display:block;max-width:100%}
+h1,h2,h3,h4,p{margin:0}
+h1,h2,h3,.bal{text-wrap:balance}
+p,li,figcaption,td{text-wrap:pretty}
+.wrap{max-width:calc(var(--conteudo) + 2*var(--margem));margin:0 auto;padding:0 var(--margem)}
+.serif{font-family:var(--f-display)}
+.it{font-style:italic}
+.muted{color:var(--c-tinta-suave)}
+
+/* capa */
+.capa{padding:56px 0 96px;border-bottom:1px solid var(--c-linha);background:
+  radial-gradient(1200px 520px at 85% 0%, rgba(184,151,106,.16), transparent 70%), var(--c-marfim)}
+.capa__top{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--c-tinta-suave);letter-spacing:.02em}
+.capa__top b{color:var(--c-tinta);font-weight:600}
+.capa__corpo{display:grid;grid-template-columns:1.4fr 1fr;gap:64px;align-items:end;margin-top:96px}
+.capa__mono{width:88px;margin-bottom:40px}
+.capa h1{font-family:var(--f-display);font-weight:300;font-size:80px;line-height:1;letter-spacing:-.015em}
+.capa h1 em{color:var(--c-vinho)}
+.capa__lead{font-size:18px;color:var(--c-tinta-suave);max-width:44ch}
+.indice{display:grid;grid-template-columns:repeat(3,1fr);gap:0 32px;margin-top:72px;border-top:1px solid var(--c-linha);padding-top:24px}
+.indice a{display:flex;gap:14px;align-items:baseline;padding:10px 0;border-bottom:1px solid var(--c-linha);color:var(--c-tinta);text-decoration:none;font-size:15px}
+.indice a span{font-family:var(--f-display);font-style:italic;color:var(--c-champanhe-texto);font-size:16px;min-width:26px}
+
+/* seções do documento */
+.doc{padding:120px 0;border-bottom:1px solid var(--c-linha)}
+.doc--areia{background:var(--c-areia)}
+.doc__head{display:grid;grid-template-columns:120px 1fr;gap:32px;margin-bottom:64px}
+.doc__num{font-family:var(--f-display);font-style:italic;font-weight:300;font-size:40px;line-height:1;color:var(--c-champanhe)}
+.doc__head h2{font-family:var(--f-display);font-weight:300;font-size:52px;line-height:1.05;letter-spacing:-.01em}
+.doc__head p{margin-top:18px;max-width:66ch;color:var(--c-tinta-suave);font-size:17px}
+.sub{font-family:var(--f-texto);font-size:12px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--c-champanhe-texto);margin:0 0 20px;display:flex;align-items:center;gap:12px}
+.sub::before{content:"";width:28px;height:1px;background:var(--c-champanhe)}
+.bloco{margin-top:72px}
+.nota{font-size:13px;color:var(--c-tinta-suave);margin-top:14px}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:5px 10px;border-radius:var(--r-pill);border:1px solid var(--c-linha);background:var(--c-linho);color:var(--c-tinta)}
+.chip--ok{background:#E7EFE4;border-color:#C9DABF;color:#2F4A25}
+.chip--aj{background:#F3EAD9;border-color:#E2D0AC;color:#6B4E1E}
+.chip--re{background:#F3E1E3;border-color:#E3C3C8;color:#6E1F2E}
+
+/* 01 diagnóstico */
+.diag{display:grid;grid-template-columns:1fr 1fr;gap:28px}
+.diag__item{background:var(--c-linho);border:1px solid var(--c-linha);border-radius:var(--r-m);overflow:hidden;display:flex;flex-direction:column}
+.diag__item--largo{grid-column:1/-1;flex-direction:row}
+.diag__img{background:#1E0408;height:300px;display:flex;align-items:center;justify-content:center;gap:10px;padding:18px}
+.diag__img img{max-height:100%;max-width:100%;object-fit:contain;border-radius:6px}
+.diag__img--col{flex-direction:column}
+.diag__img--col img{max-height:30%}
+.diag__item--largo .diag__img{height:auto;flex:0 0 58%;padding:24px}
+.diag__txt{padding:26px 30px 30px}
+.diag__txt .n{font-family:var(--f-display);font-style:italic;color:var(--c-champanhe-texto);font-size:20px}
+.diag__txt h3{font-family:var(--f-display);font-weight:400;font-size:26px;line-height:1.1;margin:4px 0 10px}
+.diag__txt p{font-size:15px;color:var(--c-tinta-suave)}
+.diag__txt p + p{margin-top:10px}
+.diag__item--largo .diag__txt{padding:44px;display:flex;flex-direction:column;justify-content:center}
+.ativos{margin-top:28px;display:grid;grid-template-columns:260px 1fr;gap:32px;padding:32px;border-radius:var(--r-m);background:var(--c-vinho-profundo);color:var(--c-marfim)}
+.ativos h3{font-family:var(--f-display);font-weight:300;font-size:28px;line-height:1.1}
+.ativos ul{margin:0;padding:0;list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:10px 32px;font-size:15px;color:var(--c-champanhe-claro)}
+.ativos li{padding-left:18px;position:relative}
+.ativos li::before{content:"";position:absolute;left:0;top:.6em;width:5px;height:5px;border-radius:50%;background:var(--c-champanhe)}
+
+/* 02 essência */
+.essencia{display:grid;grid-template-columns:1.1fr 1fr;gap:72px;align-items:start}
+.essencia__linha{font-family:var(--f-display);font-weight:300;font-size:64px;line-height:1.04;letter-spacing:-.015em}
+.essencia__linha em{color:var(--c-vinho)}
+.essencia ol{margin:0;padding:0;list-style:none;counter-reset:f}
+.essencia ol li{counter-increment:f;display:grid;grid-template-columns:40px 1fr;padding:18px 0;border-top:1px solid var(--c-linha);font-size:17px}
+.essencia ol li::before{content:counter(f, decimal-leading-zero);font-family:var(--f-display);font-style:italic;color:var(--c-champanhe-texto);font-size:19px;line-height:1.5}
+.tom{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.tom__item{border:1px solid var(--c-linha);border-radius:var(--r-m);background:var(--c-linho);padding:28px}
+.tom__item h4{font-family:var(--f-display);font-weight:400;font-size:24px;line-height:1.1}
+.tom__item .nao{margin-top:6px;color:var(--c-tinta-suave);font-size:15px}
+.tom__ex{margin-top:20px;padding-top:16px;border-top:1px solid var(--c-linha);font-size:14px;display:grid;gap:8px}
+.tom__ex b{font-size:11px;letter-spacing:.14em;text-transform:uppercase;display:block;color:var(--c-champanhe-texto)}
+.tom__ex .x{color:var(--c-tinta-suave);text-decoration:line-through;text-decoration-color:rgba(110,31,46,.5)}
+.arq{margin-top:24px;display:grid;grid-template-columns:auto 1fr;gap:28px;align-items:center;padding:28px;border:1px dashed var(--c-champanhe);border-radius:var(--r-m)}
+.arq img{width:150px;border-radius:var(--r-s)}
+.arq p{font-size:15px;color:var(--c-tinta-suave)}
+.arq h4{font-size:16px;margin-bottom:6px}
+
+/* 03 paleta */
+.paleta{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.cor{border-radius:var(--r-m);overflow:hidden;border:1px solid var(--c-linha);background:var(--c-linho)}
+.cor__amostra{height:150px;padding:16px;display:flex;align-items:flex-end;font-family:var(--f-display);font-size:24px}
+.cor__info{padding:16px 18px 18px;font-size:13px;color:var(--c-tinta-suave)}
+.cor__info b{display:block;color:var(--c-tinta);font-size:15px}
+.cor__info code{font-family:ui-monospace,Consolas,monospace;font-size:12px;color:var(--c-tinta)}
+.proporcao{display:flex;height:56px;border-radius:var(--r-s);overflow:hidden;border:1px solid var(--c-linha)}
+.proporcao div{display:flex;align-items:center;padding:0 12px;font-size:12px;font-weight:600;white-space:nowrap}
+.tabela{width:100%;border-collapse:collapse;font-size:14px}
+.tabela th{font-size:11px;letter-spacing:.14em;text-transform:uppercase;text-align:left;color:var(--c-tinta-suave);font-weight:700;padding:0 12px 12px;border-bottom:1px solid var(--c-linha)}
+.tabela td{padding:12px;border-bottom:1px solid var(--c-linha);vertical-align:middle}
+.par{display:inline-flex;align-items:center;justify-content:center;min-width:132px;height:40px;padding:0 14px;border-radius:var(--r-s);font-weight:600;font-size:14px;border:1px solid rgba(0,0,0,.06)}
+.ok{font-weight:700;color:#2F4A25}
+.fail{font-weight:700;color:#6E1F2E}
+
+/* 04 tipografia */
+.tipo{border-top:1px solid var(--c-linha)}
+.tipo__linha{display:grid;grid-template-columns:150px 1fr 230px;gap:28px;align-items:baseline;padding:24px 0;border-bottom:1px solid var(--c-linha)}
+.tipo__nome{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--c-champanhe-texto)}
+.tipo__spec{font-size:12.5px;color:var(--c-tinta-suave);line-height:1.55;font-variant-numeric:tabular-nums}
+.tipo__spec b{color:var(--c-tinta);font-weight:600}
+.par-fontes{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:56px}
+.fonte{border:1px solid var(--c-linha);border-radius:var(--r-m);background:var(--c-linho);padding:32px}
+.fonte__aa{font-size:104px;line-height:1;margin:8px 0 18px}
+.fonte p{font-size:14px;color:var(--c-tinta-suave)}
+
+/* 05 grid */
+.grid-demo{position:relative;height:240px;border:1px solid var(--c-linha);border-radius:var(--r-m);background:var(--c-linho);padding:0 40px;overflow:hidden}
+.grid-demo__cols{position:absolute;inset:0 40px;display:grid;grid-template-columns:repeat(12,1fr);gap:24px}
+.grid-demo__cols div{background:rgba(94,26,46,.07);border-left:1px solid rgba(94,26,46,.18);border-right:1px solid rgba(94,26,46,.18)}
+.grid-demo__conteudo{position:relative;display:grid;grid-template-columns:repeat(12,1fr);gap:24px;padding-top:40px}
+.grid-demo__conteudo .a{grid-column:1/8;height:120px;border-radius:var(--r-s);background:var(--c-vinho);color:var(--c-marfim);padding:16px;font-size:13px}
+.grid-demo__conteudo .b{grid-column:8/13;height:120px;border-radius:var(--r-s);background:var(--c-areia);border:1px solid var(--c-linha);padding:16px;font-size:13px}
+.grid-legenda{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:20px}
+.grid-legenda div{font-size:14px;color:var(--c-tinta-suave)}
+.grid-legenda b{display:block;color:var(--c-tinta);font-size:15px}
+.espacos{display:flex;align-items:flex-end;gap:18px;flex-wrap:wrap}
+.espaco{display:flex;flex-direction:column;align-items:center;gap:8px;font-size:12px;color:var(--c-tinta-suave)}
+.espaco i{display:block;background:var(--c-champanhe);opacity:.75;border-radius:2px}
+.raios{display:grid;grid-template-columns:repeat(6,1fr);gap:20px}
+.raio{text-align:center;font-size:12px;color:var(--c-tinta-suave)}
+.raio i{display:block;height:110px;background:var(--c-areia);border:1px solid var(--c-champanhe);margin-bottom:10px}
+.codigo{background:var(--c-vinho-profundo);color:#EADFCF;border-radius:var(--r-m);padding:32px 36px;font-family:ui-monospace,Consolas,monospace;font-size:12.5px;line-height:1.7;overflow:auto;columns:2;column-gap:48px;white-space:pre}
+.codigo .c{color:var(--c-champanhe)}
+
+/* 06 componentes (vitrine) */
+.vitrine{display:grid;grid-template-columns:repeat(12,1fr);gap:24px}
+.peca{grid-column:span 6;border:1px solid var(--c-linha);border-radius:var(--r-m);background:var(--c-marfim);overflow:hidden;display:flex;flex-direction:column}
+.peca > .peca__palco:last-child{flex:1}
+.peca--12{grid-column:1/-1}.peca--4{grid-column:span 4}.peca--8{grid-column:span 8}
+.peca__rot{background:var(--c-linho);display:flex;justify-content:space-between;align-items:center;padding:14px 22px;border-bottom:1px solid var(--c-linha);font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--c-tinta-suave)}
+.peca__rot span{font-weight:500;letter-spacing:0;text-transform:none;font-size:12.5px}
+.peca__palco{padding:32px;background:var(--c-marfim);align-content:start}
+.peca__palco--areia{background:var(--c-areia)}
+.peca__palco--escuro{background:var(--c-vinho-profundo)}
+.estados{display:grid;grid-template-columns:110px repeat(4,1fr);gap:16px 18px;align-items:center}
+.estados .h{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--c-tinta-suave)}
+
+/* =========================================================
+   COMPONENTES DO SITE (usados na vitrine e nos mockups)
+   ========================================================= */
+.btn{--bg:var(--c-vinho);--fg:var(--c-marfim);--bd:var(--c-vinho);
+  display:inline-flex;align-items:center;justify-content:center;gap:10px;height:52px;padding:0 26px;border-radius:var(--r-pill);
+  background:var(--bg);color:var(--fg);border:1px solid var(--bd);font:600 var(--t-botao)/1 var(--f-texto);letter-spacing:.01em;text-decoration:none;white-space:nowrap;
+  transition:background var(--d-1) var(--ease), color var(--d-1) var(--ease), border-color var(--d-1) var(--ease)}
+.btn svg{width:16px;height:16px;transition:transform var(--d-2) var(--ease)}
+.btn:hover,.btn.is-hover{--bg:var(--c-vinho-profundo);--bd:var(--c-vinho-profundo)}
+.btn:hover svg,.btn.is-hover svg{transform:translateX(4px)}
+.btn:focus-visible,.btn.is-focus{outline:2px solid var(--c-champanhe);outline-offset:3px}
+.btn[disabled],.btn.is-off{--bg:#E6DCCF;--bd:#E6DCCF;--fg:#8E7E7F;cursor:not-allowed}
+.btn--sec{--bg:transparent;--fg:var(--c-tinta);--bd:#CDBFAD}
+.btn--sec:hover,.btn--sec.is-hover{--bg:transparent;--bd:var(--c-vinho);--fg:var(--c-vinho)}
+.btn--sec.is-off{--bg:transparent;--bd:#E6DCCF;--fg:#A39495}
+.btn--wa{--bg:var(--c-linho);--fg:var(--c-tinta);--bd:var(--c-linha)}
+.btn--wa .wa{color:var(--c-whats);width:20px;height:20px}
+.btn--wa:hover,.btn--wa.is-hover{--bg:#fff;--bd:#CDBFAD}
+.btn--wa.is-off{--bg:#F1EBE2;--fg:#A39495}
+.btn--wa.is-off .wa{color:#A39495}
+.btn--claro{--bg:var(--c-marfim);--fg:var(--c-vinho);--bd:var(--c-marfim)}
+.btn--claro:hover{--bg:#fff;--bd:#fff}
+.btn--fantasma-escuro{--bg:transparent;--fg:var(--c-marfim);--bd:rgba(247,242,234,.35)}
+.btn--fantasma-escuro .wa{color:#7FD9A2;width:20px;height:20px}
+.btn--sm{height:42px;padding:0 18px;font-size:14px}
+.link{display:inline-flex;align-items:center;gap:8px;font:600 14px/1 var(--f-texto);color:var(--c-vinho);text-decoration:none;padding-bottom:4px;border-bottom:1px solid rgba(94,26,46,.3)}
+.link svg{width:14px;height:14px;transition:transform var(--d-2) var(--ease)}
+.link.is-hover svg{transform:translateX(4px)}
+
+.eyebrow{display:flex;align-items:center;gap:12px;font:700 var(--t-eyebrow)/1.2 var(--f-texto);letter-spacing:.18em;text-transform:uppercase;color:var(--c-champanhe-texto)}
+.eyebrow::before{content:"";width:28px;height:1px;background:var(--c-champanhe);flex:none}
+.eyebrow--escuro{color:var(--c-champanhe-claro)}
+
+/* card de especialidade */
+.esp{position:relative;display:flex;flex-direction:column;min-height:280px;padding:28px 28px 26px;border-radius:var(--r-m);background:var(--c-linho);border:1px solid var(--c-linha);transition:border-color var(--d-2) var(--ease), transform var(--d-2) var(--ease), box-shadow var(--d-2) var(--ease)}
+.esp.is-hover{border-color:rgba(94,26,46,.45);transform:translateY(-3px);box-shadow:var(--sh-1)}
+.esp__top{display:flex;justify-content:space-between;align-items:center}
+.esp__n{font-family:var(--f-display);font-style:italic;font-size:22px;color:var(--c-champanhe-texto)}
+.tag{font:700 10.5px/1 var(--f-texto);letter-spacing:.14em;text-transform:uppercase;padding:7px 11px;border-radius:var(--r-pill);border:1px solid var(--c-linha);color:var(--c-tinta-suave)}
+.esp h3{font-family:var(--f-display);font-weight:400;font-size:28px;line-height:1.05;margin-top:44px}
+.esp p{font-size:15px;line-height:1.6;color:var(--c-tinta-suave);margin-top:10px}
+.esp .link{margin-top:auto;align-self:flex-start;transform:translateY(0)}
+.esp p + .link{margin-top:auto}
+.esp__rodape{margin-top:auto;padding-top:24px}
+.esp--assinatura{background:var(--c-vinho);border-color:var(--c-vinho);color:var(--c-marfim)}
+.esp--assinatura .esp__n{color:var(--c-champanhe-claro)}
+.esp--assinatura .tag{border-color:rgba(216,194,156,.45);color:var(--c-champanhe-claro)}
+.esp--assinatura p{color:#E3D3D6}
+.esp--assinatura .link{color:var(--c-marfim);border-color:rgba(247,242,234,.4)}
+
+/* card de profissional */
+.pro{display:flex;flex-direction:column}
+.pro__foto{aspect-ratio:4/5;border-radius:var(--r-arco);overflow:hidden;background:var(--c-areia)}
+.pro__foto img{width:100%;height:100%;object-fit:cover;object-position:50% 20%;transform-origin:50% 0;transition:transform var(--d-4) var(--ease)}
+.pro__foto--vazio{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;border:1px dashed var(--c-champanhe);background:linear-gradient(180deg,#EFE6D9,#E7DBCA);text-align:center;padding:24px;font-size:12px;color:var(--c-tinta-suave)}
+.pro__foto--vazio img{width:56px;height:auto;opacity:.55}
+.pro__nome{font-family:var(--f-display);font-weight:400;font-size:24px;line-height:1.1;margin-top:22px}
+.pro__cargo{font-size:14px;color:var(--c-tinta-suave);margin-top:4px}
+.pro__reg{margin-top:14px;padding-top:12px;border-top:1px solid var(--c-linha);font:700 11px/1.4 var(--f-texto);letter-spacing:.12em;text-transform:uppercase;color:var(--c-champanhe-texto);font-variant-numeric:tabular-nums}
+.pro__bio{font-size:14px;line-height:1.6;color:var(--c-tinta-suave);margin-top:10px}
+.pend{color:#8A3A49;font-weight:700}
+
+/* selo de confiança */
+.selos{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--c-linha);border-bottom:1px solid var(--c-linha)}
+.selo{display:flex;gap:14px;align-items:flex-start;padding:22px 20px 22px 0}
+.selo + .selo{padding-left:22px;border-left:1px solid var(--c-linha)}
+.selo svg{width:30px;height:30px;flex:none;color:var(--c-champanhe);stroke-width:1.3}
+.selo b{display:block;font-size:14.5px;font-weight:600;line-height:1.35}
+.selo span{display:block;font-size:12.5px;color:var(--c-tinta-suave);margin-top:2px}
+
+/* depoimento */
+.dep{position:relative;padding:40px 40px 34px;border-radius:var(--r-l);background:var(--c-linho);border:1px solid var(--c-linha)}
+.dep__aspas{font-family:var(--f-display);font-size:110px;line-height:.6;color:var(--c-champanhe);height:44px}
+.dep__txt{font-family:var(--f-display);font-weight:300;font-size:24px;line-height:1.3;font-style:italic;color:var(--c-tinta)}
+.dep__ph{background:repeating-linear-gradient(135deg, rgba(184,151,106,.10) 0 10px, transparent 10px 20px);border-radius:8px;padding:6px 10px;color:var(--c-tinta-suave)}
+.dep__quem{display:flex;align-items:center;gap:14px;margin-top:26px;padding-top:18px;border-top:1px solid var(--c-linha);font-size:14px}
+.dep__quem i{width:40px;height:40px;border-radius:50%;background:var(--c-areia);border:1px solid var(--c-linha)}
+.dep__quem b{display:block}
+
+/* FAQ */
+.faq{border-top:1px solid var(--c-linha)}
+.faq__item{border-bottom:1px solid var(--c-linha)}
+.faq__q{display:flex;justify-content:space-between;align-items:center;gap:24px;padding:22px 0;font-family:var(--f-display);font-size:22px;font-weight:400;line-height:1.2}
+.faq__ic{position:relative;width:36px;height:36px;border-radius:50%;border:1px solid #CDBFAD;flex:none;transition:transform var(--d-2) var(--ease), background var(--d-2) var(--ease)}
+.faq__ic::before,.faq__ic::after{content:"";position:absolute;left:50%;top:50%;width:12px;height:1.5px;background:var(--c-tinta);transform:translate(-50%,-50%)}
+.faq__ic::after{transform:translate(-50%,-50%) rotate(90deg);transition:transform var(--d-2) var(--ease)}
+.faq__item.is-open .faq__ic{background:var(--c-vinho);border-color:var(--c-vinho)}
+.faq__item.is-open .faq__ic::before,.faq__item.is-open .faq__ic::after{background:var(--c-marfim)}
+.faq__item.is-open .faq__ic::after{transform:translate(-50%,-50%) rotate(0deg)}
+.faq__a{padding:0 64px 26px 0;font-size:16px;color:var(--c-tinta-suave);max-width:72ch}
+.faq__a small{display:block;margin-top:10px;font-size:12px;color:var(--c-champanhe-texto);font-weight:600}
+
+/* header do site */
+.s-header{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:20px 48px;background:var(--c-marfim);border-bottom:1px solid transparent}
+.s-header--rolado{padding:12px 48px;background:rgba(247,242,234,.92);border-bottom-color:var(--c-linha);box-shadow:0 8px 24px -20px rgba(43,27,31,.4)}
+.s-marca{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--c-tinta)}
+.s-marca img{width:34px;height:auto}
+.s-marca b{display:block;font-family:var(--f-display);font-weight:500;font-size:17px;letter-spacing:.16em;text-transform:uppercase;line-height:1}
+.s-marca span{display:block;font-size:9.5px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--c-tinta-suave);margin-top:5px}
+.s-nav{display:flex;gap:34px;font-size:14px;font-weight:500}
+.s-nav a{color:var(--c-tinta);text-decoration:none}
+.s-nav a.on{color:var(--c-vinho);box-shadow:inset 0 -1px 0 var(--c-vinho);padding-bottom:4px}
+.s-menu{display:none;width:44px;height:44px;border-radius:50%;border:1px solid var(--c-linha);align-items:center;justify-content:center}
+.s-menu i{display:block;width:16px;height:1.5px;background:var(--c-tinta);box-shadow:0 5px 0 var(--c-tinta)}
+.s-header .btn{height:44px;padding:0 20px;font-size:14px}
+
+/* rodapé do site */
+.s-rodape{background:var(--c-vinho-profundo);color:#E9DED0;padding:64px 48px 28px}
+.s-rodape__grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1.2fr;gap:40px}
+.s-rodape .s-marca{color:var(--c-marfim)}
+.s-rodape .s-marca span{color:var(--c-champanhe-claro)}
+.s-rodape h5{margin:0 0 14px;font:700 11px/1 var(--f-texto);letter-spacing:.16em;text-transform:uppercase;color:var(--c-champanhe-claro)}
+.s-rodape ul{list-style:none;margin:0;padding:0;display:grid;gap:9px;font-size:14px}
+.s-rodape p{font-size:14px;color:#CDBDB0}
+.s-rodape__base{display:flex;justify-content:space-between;gap:24px;margin-top:48px;padding-top:22px;border-top:1px solid rgba(216,194,156,.18);font-size:12.5px;color:#BCA9A0}
+.ph{color:var(--c-champanhe-claro);font-weight:600}
+.ph-claro{color:#8A3A49;font-weight:600}
+
+/* =========================================================
+   MOCKUPS (molduras com container query: o mesmo HTML vira celular)
+   ========================================================= */
+.mock{margin-top:64px}
+.mock__titulo{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:18px}
+.mock__titulo h3{font-family:var(--f-display);font-weight:400;font-size:30px}
+.mock__titulo span{font-size:13px;color:var(--c-tinta-suave)}
+.tela{container-type:inline-size;background:var(--c-marfim);border:1px solid var(--c-linha);border-radius:16px;overflow:hidden;box-shadow:var(--sh-2)}
+.tela__barra{display:flex;align-items:center;gap:8px;height:38px;padding:0 16px;background:#EFE7DC;border-bottom:1px solid var(--c-linha)}
+.tela__barra i{width:10px;height:10px;border-radius:50%;background:#D9CCBB}
+.tela__barra span{margin-left:16px;flex:0 1 360px;height:22px;border-radius:6px;background:var(--c-linho);font-size:11px;color:var(--c-tinta-suave);display:flex;align-items:center;padding:0 10px}
+.mock__baixo{display:grid;grid-template-columns:392px 1fr;gap:56px;margin-top:40px;align-items:start}
+.cel{width:392px;border:10px solid #231417;border-radius:46px;overflow:hidden;background:#231417;box-shadow:var(--sh-2)}
+.cel .tela{border:0;border-radius:36px;box-shadow:none;position:relative}
+.cel__status{height:34px;display:flex;justify-content:space-between;align-items:center;padding:0 26px;font-size:12px;font-weight:600;background:var(--c-marfim);color:var(--c-tinta)}
+.cel__status i{width:90px;height:22px;border-radius:12px;background:#231417}
+.decisoes h4{font-family:var(--f-display);font-weight:400;font-size:24px;margin-bottom:16px}
+.decisoes ul{margin:0;padding:0;list-style:none}
+.decisoes li{padding:14px 0 14px 28px;border-top:1px solid var(--c-linha);position:relative;font-size:15px;color:var(--c-tinta-suave)}
+.decisoes li b{color:var(--c-tinta);font-weight:600}
+.decisoes li::before{content:"";position:absolute;left:2px;top:23px;width:6px;height:6px;border-radius:50%;background:var(--c-champanhe)}
+
+/* seções do site dentro das telas */
+.st{padding:96px 48px}
+.st--areia{background:var(--c-areia)}
+.st__cab{display:grid;grid-template-columns:1.2fr 1fr;gap:64px;align-items:end;margin-bottom:48px}
+.st__cab h2{font-family:var(--f-display);font-weight:300;font-size:46px;line-height:1.06;letter-spacing:-.01em;margin-top:18px}
+.st__cab p{font-size:17px;color:var(--c-tinta-suave)}
+
+.hero{padding:64px 48px 48px}
+.hero__top{display:grid;grid-template-columns:1.55fr 1fr;gap:64px;align-items:end}
+.hero h1{font-family:var(--f-display);font-weight:300;font-size:62px;line-height:1.04;letter-spacing:-.015em;margin-top:22px}
+.hero h1 em{color:var(--c-vinho)}
+.hero__lead{font-size:17.5px;color:var(--c-tinta-suave)}
+.hero__acoes{display:flex;gap:14px;align-items:center;margin-top:28px;flex-wrap:wrap}
+.hero__midia{position:relative;margin-top:48px;border-radius:var(--r-l);overflow:hidden;aspect-ratio:16/7.2}
+.hero__midia img{width:100%;height:100%;object-fit:cover;object-position:50% 30%}
+.hero__midia figcaption{position:absolute;left:20px;bottom:20px;background:rgba(247,242,234,.9);backdrop-filter:blur(6px);padding:9px 14px;border-radius:var(--r-pill);font-size:12.5px;font-weight:600;color:var(--c-tinta)}
+.hero .selos{margin-top:40px}
+.barra-cta{display:none}
+
+.esp-grid{display:grid;grid-template-columns:1.35fr 1fr 1fr;gap:20px}
+.esp--mama{grid-row:span 2;padding:36px 36px 32px;background:var(--c-linho)}
+.esp--mama h3{font-size:46px;margin-top:56px;line-height:1}
+.esp--mama > p{font-size:16px;max-width:36ch}
+.esp__sub{list-style:none;margin:28px 0 0;padding:0;border-top:1px solid var(--c-linha)}
+.esp__sub li{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:baseline;padding:14px 0;border-bottom:1px solid var(--c-linha)}
+.esp__sub b{font-family:var(--f-display);font-weight:400;font-size:21px}
+.esp__sub span{font-size:13.5px;color:var(--c-tinta-suave);text-align:right}
+.esp__rodape--duplo{display:flex;gap:22px;flex-wrap:wrap}
+.esp-grid .esp--rpp{grid-column:span 2;min-height:0}
+.esp-grid .esp--rpp h3{margin-top:26px}
+.esp-mais{grid-column:1/-1;display:grid;grid-template-columns:auto 1fr 1fr;gap:0;align-items:stretch;border:1px solid var(--c-linha);border-radius:var(--r-m);background:var(--c-linho);overflow:hidden}
+.esp-mais > span{display:flex;align-items:center;padding:0 28px;font:700 11px/1.3 var(--f-texto);letter-spacing:.16em;text-transform:uppercase;color:var(--c-champanhe-texto);background:var(--c-marfim);border-right:1px solid var(--c-linha)}
+.esp-mais a{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:20px 28px;text-decoration:none;color:var(--c-tinta)}
+.esp-mais a + a{border-left:1px solid var(--c-linha)}
+.esp-mais b{font-family:var(--f-display);font-weight:400;font-size:21px}
+.esp-mais small{display:block;font-size:13px;color:var(--c-tinta-suave)}
+.esp-mais svg{width:16px;height:16px;color:var(--c-vinho);flex:none}
+
+/* galeria de resultados */
+.gal__aviso{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:start;padding:18px 22px;border:1px solid var(--c-champanhe);border-radius:var(--r-s);background:rgba(184,151,106,.08);font-size:14px;color:var(--c-tinta-suave)}
+.gal__aviso svg{width:22px;height:22px;color:var(--c-champanhe-texto);margin-top:1px}
+.gal__aviso b{color:var(--c-tinta)}
+.gal{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:22px}
+.caso{border:1px solid var(--c-linha);border-radius:var(--r-m);background:var(--c-linho);overflow:hidden}
+.caso__img{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:2px;aspect-ratio:4/3;background:var(--c-linha)}
+.caso__img > div{display:flex;align-items:flex-end;padding:10px;background:repeating-linear-gradient(135deg,#EDE3D5 0 12px,#E6DACA 12px 24px);font-size:11px;font-weight:600;color:var(--c-tinta-suave)}
+.caso__img > .caso__veu{position:absolute;inset:0;grid-column:1/-1;align-items:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;padding:20px;background:rgba(237,227,213,.82);backdrop-filter:blur(14px);font-size:13px;color:var(--c-tinta-suave)}
+.caso__veu .btn{height:40px;padding:0 18px;font-size:13.5px}
+.caso__txt{padding:18px 20px 20px}
+.caso__txt .tag{display:inline-block}
+.caso__txt h4{font-family:var(--f-display);font-weight:400;font-size:21px;margin:12px 0 4px}
+.caso__txt p{font-size:13px;color:var(--c-tinta-suave);line-height:1.55}
+.caso__txt .pro__reg{margin-top:12px}
+.gal__regras{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:26px;font-size:13.5px;color:var(--c-tinta-suave)}
+.gal__regras b{display:block;color:var(--c-tinta);font-size:14px;margin-bottom:4px}
+
+
+.bento{display:grid;grid-template-columns:repeat(12,1fr);gap:28px 24px}
+.bento figure{margin:0}
+.bento .t7{grid-column:span 7}.bento .t5{grid-column:span 5}.bento .t6{grid-column:span 6}
+.bento__img{position:relative;border-radius:var(--r-m);overflow:hidden;height:440px;background:#E2D5C3}
+.bento .t6 .bento__img{height:330px}
+.bento__img img{width:100%;height:100%;object-fit:cover}
+.bento__img .chip{position:absolute;top:16px;left:16px}
+.bento__vazio{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;text-align:center;border:1px dashed var(--c-champanhe);border-radius:var(--r-m);color:var(--c-tinta-suave);font-size:13px;background:linear-gradient(160deg,#E9DDCC,#DFD0BC)}
+.bento__img .bento__vazio img{width:64px;height:auto;opacity:.5}
+.bento figcaption{display:grid;grid-template-columns:1fr 1.25fr;gap:24px;margin-top:20px}
+.bento figcaption h3{font-family:var(--f-display);font-weight:400;font-size:24px;line-height:1.1}
+.bento figcaption p{font-size:14.5px;color:var(--c-tinta-suave)}
+
+.equipe-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:28px}
+
+.cta-final{background:var(--c-vinho-profundo);color:var(--c-marfim);padding:112px 48px 96px;text-align:center;position:relative;overflow:hidden}
+.cta-final::before{content:"";position:absolute;inset:auto -10% -60% -10%;height:120%;background:radial-gradient(closest-side, rgba(184,151,106,.16), transparent);pointer-events:none}
+.cta-final > *{position:relative}
+.cta-final img.mono{width:56px;margin:0 auto 32px}
+.cta-final h2{font-family:var(--f-display);font-weight:300;font-size:56px;line-height:1.05;letter-spacing:-.01em;max-width:20ch;margin:0 auto}
+.cta-final p.lead{margin:22px auto 0;max-width:48ch;font-size:17px;color:var(--c-champanhe-claro)}
+.cta-final .acoes{display:flex;gap:14px;justify-content:center;margin-top:36px;flex-wrap:wrap}
+.cta-final .info{display:grid;grid-template-columns:repeat(3,1fr);max-width:860px;margin:64px auto 0;border-top:1px solid rgba(216,194,156,.22)}
+.cta-final .info div{padding:22px 16px 0;font-size:14px;color:#CDBDB0}
+.cta-final .info b{display:block;font:700 11px/1 var(--f-texto);letter-spacing:.16em;text-transform:uppercase;color:var(--c-champanhe-claro);margin-bottom:10px}
+
+/* ---- versão celular: o mesmo markup dentro de uma tela estreita ---- */
+@container (max-width: 640px){
+  .s-header,.s-header--rolado{padding:14px 20px}
+  .s-nav,.s-header .btn{display:none}
+  .s-menu{display:flex}
+  .s-marca b{font-size:16px}
+  .s-marca img{width:30px}
+  .hero{padding:28px 20px 32px}
+  .hero__top{grid-template-columns:1fr;gap:20px}
+  .hero h1{font-size:38px;margin-top:16px}
+  .hero__lead{font-size:16px}
+  .hero__acoes .btn{width:100%}
+  .hero__acoes .link{margin:6px auto 0}
+  .hero__midia{aspect-ratio:4/5;margin-top:28px;border-radius:var(--r-m)}
+  .hero__midia img{object-position:62% 40%}
+  .hero .selos{grid-template-columns:1fr 1fr;margin-top:24px}
+  .hero .selo{padding:16px 10px 16px 0}
+  .hero .selo + .selo{padding-left:12px}
+  .hero .selo:nth-child(3){border-left:0;padding-left:0;border-top:1px solid var(--c-linha)}
+  .hero .selo:nth-child(4){border-top:1px solid var(--c-linha)}
+  .hero .selo svg{width:24px;height:24px}
+  .barra-cta{display:flex;gap:10px;position:sticky;bottom:0;padding:12px 16px 16px;background:rgba(247,242,234,.96);border-top:1px solid var(--c-linha)}
+  .barra-cta .btn{flex:1;height:50px}
+  .barra-cta .btn--wa{flex:0 0 50px;padding:0}
+  .st{padding:64px 20px}
+  .st__cab{grid-template-columns:1fr;gap:16px;margin-bottom:32px}
+  .st__cab h2{font-size:32px;margin-top:14px}
+  .st__cab p{font-size:16px}
+  .esp-grid{grid-template-columns:1fr;gap:12px}
+  .esp--mama{grid-row:auto;padding:24px}
+  .esp--mama h3{font-size:32px;margin-top:24px}
+  .esp--mama > p{font-size:15px}
+  .esp__sub b{font-size:21px}
+  .esp-grid .esp--rpp{grid-column:auto}
+  .esp-mais{grid-template-columns:1fr}
+  .esp-mais > span{padding:14px 20px;border-right:0;border-bottom:1px solid var(--c-linha)}
+  .esp-mais a{padding:16px 20px}
+  .esp-mais a + a{border-left:0;border-top:1px solid var(--c-linha)}
+  .esp-mais b{font-size:21px}
+  .esp{min-height:0;padding:22px}
+  .esp h3{font-size:24px;margin-top:22px}
+  .esp p{font-size:14.5px}
+  .esp__rodape{padding-top:16px}
+  .bento{grid-template-columns:1fr;gap:36px}
+  .bento .t7,.bento .t5,.bento .t6{grid-column:auto}
+  .bento__img,.bento .t6 .bento__img{height:auto;aspect-ratio:4/3}
+  .bento figcaption{grid-template-columns:1fr;gap:6px;margin-top:14px}
+  .bento figcaption h3{font-size:22px}
+  .equipe-grid{grid-template-columns:1fr 1fr;gap:28px 14px}
+  .pro__nome{font-size:19px;margin-top:14px}
+  .pro__cargo{font-size:12.5px}
+  .pro__reg{font-size:9.5px;letter-spacing:.08em}
+  .pro__bio{display:none}
+  .cta-final{padding:72px 20px 56px}
+  .cta-final h2{font-size:36px}
+  .cta-final p.lead{font-size:16px}
+  .cta-final .acoes .btn{width:100%}
+  .cta-final .info{grid-template-columns:1fr;margin-top:40px;text-align:left}
+  .cta-final .info div{padding:16px 0;border-bottom:1px solid rgba(216,194,156,.16)}
+  .s-rodape{padding:48px 20px 24px}
+  .s-rodape__grid{grid-template-columns:1fr 1fr;gap:32px 20px}
+  .s-rodape__grid > div:first-child{grid-column:1/-1}
+  .s-rodape__base{flex-direction:column;gap:8px}
+}
+
+/* 07 imagem */
+.fotos{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.foto{border:1px solid var(--c-linha);border-radius:var(--r-m);background:var(--c-linho);overflow:hidden}
+.foto__img{height:200px;background:#E2D5C3;position:relative}
+.foto__img img{width:100%;height:100%;object-fit:cover}
+.foto__img .chip{position:absolute;top:12px;left:12px}
+.foto__txt{padding:16px 18px 18px;font-size:13.5px;color:var(--c-tinta-suave)}
+.foto__txt b{display:block;color:var(--c-tinta);font-size:15px;margin-bottom:4px}
+.foto--2{grid-column:span 2}
+.regras{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.regra{border-top:2px solid var(--c-vinho);padding-top:18px}
+.regra h4{font-family:var(--f-display);font-weight:400;font-size:22px;margin-bottom:10px}
+.regra p{font-size:14.5px;color:var(--c-tinta-suave)}
+.evitar{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.lista{border:1px solid var(--c-linha);border-radius:var(--r-m);background:var(--c-linho);padding:28px 30px}
+.lista h4{font-size:12px;letter-spacing:.16em;text-transform:uppercase;margin-bottom:14px}
+.lista ul{margin:0;padding:0;list-style:none;display:grid;gap:10px;font-size:15px;color:var(--c-tinta-suave)}
+.lista li{padding-left:22px;position:relative}
+.lista--sim li::before{content:"";position:absolute;left:0;top:.6em;width:10px;height:6px;border-left:1.5px solid #2F4A25;border-bottom:1.5px solid #2F4A25;transform:rotate(-45deg)}
+.lista--nao li::before,.lista--nao li::after{content:"";position:absolute;left:0;top:.75em;width:11px;height:1.5px;background:#6E1F2E;transform:rotate(45deg)}
+.lista--nao li::after{transform:rotate(-45deg)}
+.grade{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.grade figure{margin:0}
+.grade .gi{height:300px;border-radius:var(--r-m);overflow:hidden}
+.grade img{width:100%;height:100%;object-fit:cover}
+.grade figcaption{font-size:13px;color:var(--c-tinta-suave);margin-top:10px}
+.tratada{filter:sepia(.14) saturate(.82) brightness(1.04) contrast(.96)}
+
+/* 08 motion */
+.motion{display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px}
+.principio{background:var(--c-linho);border:1px solid var(--c-linha);border-radius:var(--r-m);padding:28px}
+.principio .n{font-family:var(--f-display);font-style:italic;color:var(--c-champanhe-texto);font-size:20px}
+.principio h4{font-family:var(--f-display);font-weight:400;font-size:24px;margin:6px 0 8px}
+.principio p{font-size:14.5px;color:var(--c-tinta-suave)}
+.micro{width:100%;border-collapse:collapse;font-size:14.5px}
+.micro th{text-align:left;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--c-tinta-suave);padding:0 16px 12px 0;border-bottom:1px solid var(--c-linha)}
+.micro td{padding:18px 16px 18px 0;border-bottom:1px solid var(--c-linha);vertical-align:top;color:var(--c-tinta-suave)}
+.micro td:first-child{color:var(--c-tinta);font-weight:600;width:22%}
+.micro code{font-family:ui-monospace,Consolas,monospace;font-size:12.5px;color:var(--c-vinho);white-space:nowrap}
+.curva{display:grid;grid-template-columns:300px 1fr;gap:40px;align-items:center;padding:28px;border:1px solid var(--c-linha);border-radius:var(--r-m);background:var(--c-linho)}
+.quadros{display:flex;gap:14px}
+.quadro{flex:1;height:120px;border-radius:var(--r-s);background:var(--c-areia);position:relative;overflow:hidden;border:1px solid var(--c-linha)}
+.quadro i{position:absolute;left:18px;right:18px;height:14px;border-radius:4px;background:var(--c-vinho)}
+.quadro i + i{height:8px;background:#CDBFAD}
+.quadro span{position:absolute;bottom:8px;left:10px;font-size:11px;color:var(--c-tinta-suave)}
+
+.rodape-doc{padding:64px 0 80px;font-size:13px;color:var(--c-tinta-suave)}
+.rodape-doc .wrap{display:flex;justify-content:space-between;gap:24px}
+
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+
+/* documento responsivo (leitura no celular) */
+
+/* Protótipo animado (seção 09) */
+.pt{margin-top:88px}
+.pt:first-of-type{margin-top:64px}
+.pt__par{display:grid;grid-template-columns:1fr 300px;gap:40px;align-items:start}
+.pt__par .tela img{display:block;width:100%;height:auto}
+.pt__cel{width:300px;border:9px solid #231417;border-radius:40px;overflow:hidden;background:#231417;box-shadow:var(--sh-2)}
+.pt__cel img{display:block;width:100%;height:auto;border-radius:31px}
+.pt__rotulo{font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--c-champanhe-texto);margin:40px 0 14px}
+.pt__tira{display:grid;grid-template-columns:repeat(var(--n,4),1fr);gap:16px}
+.pt__tira figure{margin:0}
+.pt__tira img{display:block;width:100%;height:auto;border-radius:var(--r-s);border:1px solid var(--c-linha);box-shadow:0 1px 2px rgba(43,27,31,.06)}
+.pt__tira figcaption{font-size:13.5px;line-height:1.5;color:var(--c-tinta-suave);margin-top:10px;text-wrap:pretty}
+.pt__tira figcaption b{display:block;font-family:var(--f-display);font-style:italic;font-weight:400;font-size:17px;color:var(--c-vinho);margin-bottom:2px}
+.pt__tira--cel{grid-template-columns:repeat(3,200px);gap:24px}
+.pt__tira--cel img{border-radius:22px}
+.pt__legenda{margin:28px 0 0;padding:18px 22px;border-left:2px solid var(--c-champanhe);background:var(--c-linho);border-radius:0 var(--r-s) var(--r-s) 0;font-size:15.5px;color:var(--c-tinta);max-width:860px;text-wrap:pretty}
+.reduzido__grade{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.reduzido__grade > div{background:var(--c-marfim);border:1px solid var(--c-linha);border-radius:var(--r-m);padding:22px}
+.reduzido__grade h4{font-family:var(--f-display);font-weight:400;font-size:20px;margin:0 0 6px}
+.reduzido__grade p{font-size:14px;color:var(--c-tinta-suave);margin:0;text-wrap:pretty}
+.micro td{text-wrap:pretty}
+@media (max-width: 900px){
+  .pt__par{grid-template-columns:1fr}
+  .pt__cel{margin:0 auto;width:min(300px,100%)}
+  .pt__tira{grid-template-columns:1fr 1fr}
+  .pt__tira--cel{grid-template-columns:repeat(3,1fr);gap:12px}
+  .reduzido__grade{grid-template-columns:1fr 1fr}
+  .capa__corpo,.essencia,.ativos,.par-fontes,.evitar,.grade,.curva,.arq{grid-template-columns:1fr}
+  .capa h1{font-size:48px}
+  .indice,.tom,.regras,.motion,.grid-legenda{grid-template-columns:1fr}
+  .doc{padding:72px 0}
+  .doc__head{grid-template-columns:1fr;gap:8px;margin-bottom:40px}
+  .doc__head h2{font-size:40px}
+  .diag{grid-template-columns:1fr}
+  .diag__item--largo{flex-direction:column}
+  .diag__img{height:220px}
+  .paleta,.fotos{grid-template-columns:1fr 1fr}
+  .raios{grid-template-columns:repeat(3,1fr)}
+  .tipo__linha{grid-template-columns:1fr;gap:8px}
+  .tipo__linha > div:nth-child(2){overflow:hidden}
+  .vitrine{grid-template-columns:1fr}
+  .peca,.peca--4,.peca--8,.peca--12{grid-column:auto}
+  .estados{grid-template-columns:1fr 1fr}
+  .estados .h{display:none}
+  .selos{grid-template-columns:1fr 1fr}
+  .gal,.gal__regras{grid-template-columns:1fr}
+  .mock__baixo{grid-template-columns:1fr}
+  .cel{width:100%;max-width:392px;margin:0 auto}
+  .essencia__linha{font-size:52px}
+  .codigo{columns:1}
+  .ativos ul{grid-template-columns:1fr}
+  .tabela{display:block;overflow-x:auto}
+  .micro{display:block;overflow-x:auto}
+}
+</style>
+</head>
+<body>
+
+<!-- SVGs reutilizáveis -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="seta" viewBox="0 0 16 16"><path d="M2 8h11M9 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="wa" viewBox="0 0 24 24"><path d="M12 3a9 9 0 0 0-7.8 13.5L3 21l4.6-1.2A9 9 0 1 0 12 3Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 8.4c.3-.6.6-.6.9-.6h.5c.2 0 .4 0 .5.4l.6 1.5c.1.2 0 .4-.1.6l-.5.6c-.1.1-.1.3 0 .5.5.9 1.3 1.7 2.3 2.2.2.1.4.1.5 0l.6-.7c.2-.2.4-.2.6-.1l1.5.7c.2.1.3.2.3.4v.5c0 .4-.2.9-.7 1.1-.6.3-1.4.4-2.6-.1-1.7-.7-3.2-2.2-4-3.8-.6-1.2-.5-2.2-.3-2.6Z" fill="currentColor"/></symbol>
+  <symbol id="i-cirurgia" viewBox="0 0 32 32"><circle cx="16" cy="16" r="13" fill="none" stroke="currentColor"/><path d="M16 9.5v13M9.5 16h13" fill="none" stroke="currentColor" stroke-linecap="round"/></symbol>
+  <symbol id="i-registro" viewBox="0 0 32 32"><rect x="6" y="4.5" width="20" height="23" rx="2.5" fill="none" stroke="currentColor"/><path d="M11 11h10M11 15.5h10M11 20h6" fill="none" stroke="currentColor" stroke-linecap="round"/></symbol>
+  <symbol id="i-equipe" viewBox="0 0 32 32"><circle cx="11" cy="11.5" r="4" fill="none" stroke="currentColor"/><circle cx="21.5" cy="11.5" r="4" fill="none" stroke="currentColor"/><path d="M3.5 26c.8-4.6 3.7-7 7.5-7s6.7 2.4 7.5 7M15 21.2c1.5-1.4 3.9-2.2 6.5-2.2 3.8 0 6.7 2.4 7.5 7" fill="none" stroke="currentColor" stroke-linecap="round"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M12 10.5v6M12 7.2v.6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+  <symbol id="i-cafe" viewBox="0 0 32 32"><path d="M6 12h17v7a7 7 0 0 1-7 7h-3a7 7 0 0 1-7-7v-7ZM23 14h2a3.5 3.5 0 0 1 0 7h-2.5" fill="none" stroke="currentColor" stroke-linejoin="round"/><path d="M11 4.5c-1 1.2-1 2.3 0 3.5M15.5 4.5c-1 1.2-1 2.3 0 3.5" fill="none" stroke="currentColor" stroke-linecap="round"/></symbol>
+</svg>
+
+<!-- ====================== CAPA ====================== -->
+<header class="capa">
+  <div class="wrap">
+    <div class="capa__top"><span><b>Marca Digital</b> · proposta de redesign</span><span>Outubro de 2026 · versão 1</span></div>
+    <div class="capa__corpo">
+      <div>
+        <img class="capa__mono" src="img/logo-vinho.png" alt="Monograma SC">
+        <h1>Design system do novo site <em class="it">Complexo SC</em></h1>
+      </div>
+      <p class="capa__lead">Um sistema visual para tirar a clínica do escuro: fundo claro, vinho como assinatura, dourado só no detalhe e as pessoas e a estrutura reais no centro de cada página.</p>
+    </div>
+    <nav class="indice" aria-label="Índice">
+      <a href="#diagnostico"><span>01</span>Diagnóstico do site atual</a>
+      <a href="#essencia"><span>02</span>Essência e tom de voz</a>
+      <a href="#paleta"><span>03</span>Paleta e contraste</a>
+      <a href="#tipografia"><span>04</span>Tipografia</a>
+      <a href="#grid"><span>05</span>Grid, espaço, raios e tokens</a>
+      <a href="#componentes"><span>06</span>Componentes</a>
+      <a href="#imagem"><span>07</span>Direção de imagem</a>
+      <a href="#motion"><span>08</span>Movimento</a>
+      <a href="#mockups"><span>09</span>Protótipo desktop e celular</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ====================== 01 DIAGNÓSTICO ====================== -->
+<section class="doc" id="diagnostico">
+  <div class="wrap">
+    <div class="doc__head">
+      <div class="doc__num">01</div>
+      <div>
+        <h2>O que o site atual faz com a marca</h2>
+        <p>O Complexo SC tem ativos raros: equipe fotografada num ambiente claro e quente, fachada creme e vinho, monograma próprio, um método autoral e uma cafeteria anexa. O site atual esconde quase tudo isso. Sete pontos, com recortes da página no ar.</p>
+      </div>
+    </div>
+
+    <div class="diag">
+      <article class="diag__item diag__item--largo">
+        <div class="diag__img"><img src="img/diag/d1-hero.jpg" alt="Recorte do hero atual"></div>
+        <div class="diag__txt">
+          <span class="n">01</span>
+          <h3>A melhor foto da marca está apagada</h3>
+          <p>A foto da equipe foi feita num ambiente areia, de luz quente, que já é a cara de luxo silencioso. No hero ela fica sob um véu bordô tão denso que vira textura: rostos e cenário somem, e o título dourado disputa com tudo.</p>
+          <p>O sistema novo inverte a lógica: a foto aparece inteira e a cor da marca entra em volta dela, não por cima.</p>
+        </div>
+      </article>
+
+      <article class="diag__item">
+        <div class="diag__img"><img src="img/diag/d2-contraste.jpg" alt="Recorte da seção Quem somos"></div>
+        <div class="diag__txt">
+          <span class="n">02</span>
+          <h3>Tudo escuro, tudo com o mesmo peso</h3>
+          <p>A página inteira corre sobre bordô quase preto (#2D050C), com títulos em dourado saturado (#D4AF37). O contraste numérico até passa, mas não há respiro nem variação de ritmo: o olho cansa e nada se destaca. O dourado chapado lê como promoção, não como cuidado.</p>
+        </div>
+      </article>
+
+      <article class="diag__item">
+        <div class="diag__img"><img src="img/diag/d3-cards.jpg" alt="Recorte dos cards de especialidades"></div>
+        <div class="diag__txt">
+          <span class="n">03</span>
+          <h3>Especialidades sem hierarquia</h3>
+          <p>Seis cards idênticos, com a mesma estrela decorativa. Não separam cirurgia de procedimento não cirúrgico, não levam a lugar nenhum e tratam o Método RPP, que é exclusivo da casa, como mais um item da lista. E a cirurgia de mama, que domina os resultados no Instagram da clínica, nem aparece como prótese: só a mastopexia, perdida no meio.</p>
+        </div>
+      </article>
+
+      <article class="diag__item">
+        <div class="diag__img"><img src="img/diag/d4-render.jpg" alt="Render usado na seção Centro cirúrgico" style="max-width:48%"><img src="img/diag/d7-recepcao.jpg" alt="Foto atual da recepção" style="max-width:48%"></div>
+        <div class="diag__txt">
+          <span class="n">04</span>
+          <h3>A estrutura não tem prova real</h3>
+          <p>O bloco "Centro cirúrgico próprio" é ilustrado com um render 3D de um quarto, não com o centro cirúrgico. A recepção aparece com bandeiras e balão de Copa, TV ligada e luz fria. Para quem vai operar, a foto real do lugar é o argumento mais forte e hoje ele não existe.</p>
+        </div>
+      </article>
+
+      <article class="diag__item">
+        <div class="diag__img"><img src="img/diag/d5-equipe.jpg" alt="Recorte dos cards da equipe"></div>
+        <div class="diag__txt">
+          <span class="n">05</span>
+          <h3>Equipe com cara de post e dados que não batem</h3>
+          <p>Os cards são artes de Instagram com texto dentro da imagem: ilegível no celular e invisível para o Google. E as informações divergem: a arte diz "Olgà Ramos" e o texto diz "Dra. Olga Vieira"; a arte de Diana Saboya diz fisioterapeuta (CREFITO) e a legenda diz "Médica e bem-estar". O carrossel ainda repete os quatro nomes três vezes.</p>
+        </div>
+      </article>
+
+      <article class="diag__item">
+        <div class="diag__img diag__img--col"><img src="img/diag/d6-cta1.jpg" alt="Botão Agende sua consulta"><img src="img/diag/d6-cta2.jpg" alt="Botão Falar com uma especialista"><img src="img/diag/d6-cta3.jpg" alt="Botão Agendar minha avaliação VIP"></div>
+        <div class="diag__txt">
+          <span class="n">06</span>
+          <h3>Três convites diferentes e nenhum caminho</h3>
+          <p>"Agende sua consulta", "Falar com uma especialista" e "Agendar minha avaliação VIP": três textos, três estilos, mais o botão verde flutuante. Não há menu, endereço, horário nem mapa, e o rodapé só traz o copyright. A paciente não sabe onde a clínica fica nem o que acontece depois do clique.</p>
+        </div>
+      </article>
+
+      <article class="diag__item">
+        <div class="diag__img diag__img--col"><img src="img/diag/d9-faq.jpg" alt="Recorte do FAQ" style="max-height:62%"><img src="img/diag/d8-onda.jpg" alt="Recorte das ondas decorativas" style="max-height:26%"></div>
+        <div class="diag__txt">
+          <span class="n">07</span>
+          <h3>Promessas absolutas e enfeite genérico</h3>
+          <p>As respostas do FAQ falam em segurança "absoluta", "segurança blindada", "experiência High Ticket" e "decisão da sua vida". Em medicina, promessa absoluta afasta quem pesquisa com cuidado e pode conflitar com as regras de publicidade médica. As ondas douradas são o enfeite mais comum de template e não dizem nada sobre a clínica.</p>
+        </div>
+      </article>
+    </div>
+
+    <div class="ativos">
+      <h3>O que já é da marca e o sistema vai pôr na frente</h3>
+      <ul>
+        <li>Foto de equipe em ambiente areia, luz quente</li>
+        <li>Fachada creme com moldura vinho</li>
+        <li>Monograma SC entrelaçado</li>
+        <li>Assinatura "Medicina · Estética · Educação"</li>
+        <li>Centro cirúrgico próprio</li>
+        <li>Método RPP, criado dentro da casa</li>
+        <li>Cafeteria Beike anexa</li>
+        <li>Registro profissional do cirurgião (CRM 8688 · RQE 4045)</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ====================== 02 ESSÊNCIA ====================== -->
+<section class="doc doc--areia" id="essencia">
+  <div class="wrap">
+    <div class="doc__head">
+      <div class="doc__num">02</div>
+      <div>
+        <h2>Essência e posicionamento</h2>
+        <p>O material confirma a linha proposta: o ambiente real da clínica é claro, quente e calmo, e o diferencial concreto é ter centro cirúrgico, equipe multidisciplinar e hospitalidade no mesmo ecossistema. A comunicação fala primeiro com a mulher que pensa em cirurgia de mama, o procedimento que a clínica mais mostra no Instagram.</p>
+      </div>
+    </div>
+
+    <div class="essencia">
+      <p class="essencia__linha">Luxo silencioso com <em class="it">segurança médica.</em></p>
+      <ol>
+        <li>O Complexo SC é um ecossistema de cirurgia plástica e estética em Fortaleza onde o rigor de um centro cirúrgico próprio e o acolhimento de hotelaria acontecem lado a lado.</li>
+        <li>Uma equipe multidisciplinar acompanha a paciente da primeira consulta à recuperação, com métodos próprios como o RPP e uma cafeteria anexa para a espera e o pós.</li>
+        <li>A marca fala baixo, sobretudo com quem pensa em cirurgia de mama: segurança, naturalidade e acompanhamento, mostrados com pessoas, registros e estrutura reais, nunca com promessa de resultado.</li>
+      </ol>
+    </div>
+
+    <div class="bloco">
+      <p class="sub">Tom de voz</p>
+      <div class="tom">
+        <div class="tom__item">
+          <h4>É sereno e preciso.</h4>
+          <p class="nao">Não é eufórico nem superlativo.</p>
+          <div class="tom__ex"><div><b>Escrevemos</b>Infraestrutura hospitalar e equipe anestésica especializada.</div><div><b>Evitamos</b><span class="x">Tranquilidade absoluta e conforto inigualável.</span></div></div>
+        </div>
+        <div class="tom__item">
+          <h4>É acolhedor e próximo.</h4>
+          <p class="nao">Não é íntimo demais nem vendedor.</p>
+          <div class="tom__ex"><div><b>Escrevemos</b>Você conversa com a equipe e conhece a estrutura antes de decidir.</div><div><b>Evitamos</b><span class="x">A melhor decisão da sua vida.</span></div></div>
+        </div>
+        <div class="tom__item">
+          <h4>É transparente.</h4>
+          <p class="nao">Não promete resultado nem risco zero.</p>
+          <div class="tom__ex"><div><b>Escrevemos</b>Dr. Valderi Vieira, cirurgião plástico, <span style="white-space:nowrap">CRM 8688 · RQE 4045.</span></div><div><b>Evitamos</b><span class="x">Segurança blindada. Experiência High Ticket.</span></div></div>
+        </div>
+      </div>
+
+      <div class="arq">
+        <img src="img/fachada-recorte.jpg" alt="Fachada do Complexo SC">
+        <div>
+          <h4>Decisão para a conversa com o cliente: qual nome lidera</h4>
+          <p>A fachada assina "Complexo SC · Medicina · Estética · Educação", a parede da recepção e o domínio dizem "Stetic Class". Este sistema trata Complexo SC como a marca guarda-chuva e Stetic Class como a clínica dentro dela. Precisa ser confirmado antes do layout final, assim como o arquivo vetorial do monograma (hoje só existe um PNG de 150 px).</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====================== 03 PALETA ====================== -->
+<section class="doc" id="paleta">
+  <div class="wrap">
+    <div class="doc__head">
+      <div class="doc__num">03</div>
+      <div>
+        <h2>Paleta: o mesmo patrimônio, outro equilíbrio</h2>
+        <p>O vinho e o dourado continuam, mas mudam de papel. O fundo passa a ser marfim e areia, tirados da fachada e do cenário da foto de equipe. O vinho vira assinatura em pontos de decisão e o dourado vira champanhe, em fios e detalhes.</p>
+      </div>
+    </div>
+
+    <div class="paleta">
+      <div class="cor"><div class="cor__amostra" style="background:#F7F2EA;color:#2B1B1F">Marfim</div><div class="cor__info"><b>Marfim</b><code>#F7F2EA · --c-marfim</code><br>Fundo principal das páginas.</div></div>
+      <div class="cor"><div class="cor__amostra" style="background:#EDE3D5;color:#2B1B1F">Areia</div><div class="cor__info"><b>Areia</b><code>#EDE3D5 · --c-areia</code><br>Seções alternadas, fundo de foto.</div></div>
+      <div class="cor"><div class="cor__amostra" style="background:#FFFDF9;color:#2B1B1F">Linho</div><div class="cor__info"><b>Linho</b><code>#FFFDF9 · --c-linho</code><br>Superfície de cards e campos.</div></div>
+      <div class="cor"><div class="cor__amostra" style="background:#E3D7C7;color:#2B1B1F">Linha</div><div class="cor__info"><b>Linha</b><code>#E3D7C7 · --c-linha</code><br>Bordas e divisores finos.</div></div>
+      <div class="cor"><div class="cor__amostra" style="background:#2B1B1F;color:#F7F2EA">Tinta</div><div class="cor__info"><b>Tinta</b><code>#2B1B1F · --c-tinta</code><br>Títulos e texto. Preto quente, nunca cinza.</div></div>
+      <div class="cor"><div class="cor__amostra" style="background:#6A5558;color:#F7F2EA">Tinta suave</div><div class="cor__info"><b>Tinta suave</b><code>#6A5558 · --c-tinta-suave</code><br>Texto de apoio, legendas.</div></div>
+      <div class="cor"><div class="cor__amostra" style="background:#5E1A2E;color:#F7F2EA">Vinho</div><div class="cor__info"><b>Vinho</b><code>#5E1A2E · --c-vinho</code><br>Assinatura: CTA, ênfase, card RPP.</div></div>
+      <div class="cor"><div class="cor__amostra" style="background:#2E0D17;color:#D8C29C">Vinho profundo</div><div class="cor__info"><b>Vinho profundo</b><code>#2E0D17 · --c-vinho-profundo</code><br>CTA final e rodapé. Só aí.</div></div>
+      <div class="cor"><div class="cor__amostra" style="background:#B8976A;color:#2B1B1F">Champanhe</div><div class="cor__info"><b>Champanhe</b><code>#B8976A · --c-champanhe</code><br>Fios, ícones, números. Nunca texto no claro.</div></div>
+      <div class="cor"><div class="cor__amostra" style="background:#7A5B33;color:#F7F2EA">Champanhe texto</div><div class="cor__info"><b>Champanhe texto</b><code>#7A5B33 · --c-champanhe-texto</code><br>Eyebrow e registros no fundo claro.</div></div>
+      <div class="cor"><div class="cor__amostra" style="background:#D8C29C;color:#2E0D17">Champanhe claro</div><div class="cor__info"><b>Champanhe claro</b><code>#D8C29C · --c-champanhe-claro</code><br>Texto de apoio no fundo escuro.</div></div>
+      <div class="cor"><div class="cor__amostra" style="background:#FFFDF9;color:#1FA855"><svg width="40" height="40"><use href="#wa"/></svg></div><div class="cor__info"><b>Verde WhatsApp</b><code>#1FA855 · --c-whats</code><br>Só no ícone. Nunca fundo de botão.</div></div>
+    </div>
+    <p class="nota">Origem: o vinho profundo vem das artes da equipe (#390D19) e da moldura da fachada (#451E22); a areia vem do cenário da foto de equipe e das artes (#DAC9B9); o marfim, da parede da fachada.</p>
+
+    <div class="bloco">
+      <p class="sub">Proporção em uma página típica</p>
+      <div class="proporcao">
+        <div style="flex:52;background:#F7F2EA;color:#6A5558">Marfim 52%</div>
+        <div style="flex:20;background:#EDE3D5;color:#6A5558">Areia 20%</div>
+        <div style="flex:9;background:#FFFDF9;color:#6A5558">Linho 9%</div>
+        <div style="flex:8;background:#2B1B1F;color:#F7F2EA">Tinta 8%</div>
+        <div style="flex:6;background:#5E1A2E;color:#F7F2EA">Vinho 6%</div>
+        <div style="flex:3;background:#2E0D17;color:#D8C29C;padding:0 6px">3%</div>
+        <div style="flex:2;background:#B8976A;padding:0"></div>
+      </div>
+      <p class="nota">O vinho profundo aparece em uma faixa por página (CTA final e rodapé). O champanhe fica em torno de 2%: se ele chama atenção, está demais.</p>
+    </div>
+
+    <div class="bloco">
+      <p class="sub">Contraste verificado (WCAG 2.1)</p>
+      <table class="tabela">
+        <thead><tr><th>Par</th><th>Texto / fundo</th><th>Razão</th><th>Resultado</th><th>Uso</th></tr></thead>
+        <tbody>
+          <tr><td><span class="par" style="background:#F7F2EA;color:#2B1B1F">Texto principal</span></td><td>Tinta / Marfim</td><td>14,73 : 1</td><td class="ok">AAA</td><td>Títulos e corpo</td></tr>
+          <tr><td><span class="par" style="background:#F7F2EA;color:#6A5558">Texto de apoio</span></td><td>Tinta suave / Marfim</td><td>6,17 : 1</td><td class="ok">AA</td><td>Parágrafos secundários, legendas</td></tr>
+          <tr><td><span class="par" style="background:#EDE3D5;color:#6A5558">Texto de apoio</span></td><td>Tinta suave / Areia</td><td>5,42 : 1</td><td class="ok">AA</td><td>Texto em seção areia</td></tr>
+          <tr><td><span class="par" style="background:#F7F2EA;color:#5E1A2E">Ênfase</span></td><td>Vinho / Marfim</td><td>11,33 : 1</td><td class="ok">AAA</td><td>Palavra em itálico no título, links</td></tr>
+          <tr><td><span class="par" style="background:#5E1A2E;color:#F7F2EA">Agendar avaliação</span></td><td>Marfim / Vinho</td><td>11,33 : 1</td><td class="ok">AAA</td><td>Botão primário</td></tr>
+          <tr><td><span class="par" style="background:#F7F2EA;color:#7A5B33">EYEBROW</span></td><td>Champanhe texto / Marfim</td><td>5,59 : 1</td><td class="ok">AA</td><td>Eyebrow, número de registro</td></tr>
+          <tr><td><span class="par" style="background:#EDE3D5;color:#7A5B33">EYEBROW</span></td><td>Champanhe texto / Areia</td><td>4,91 : 1</td><td class="ok">AA</td><td>Eyebrow em seção areia</td></tr>
+          <tr><td><span class="par" style="background:#2E0D17;color:#F7F2EA">Título no escuro</span></td><td>Marfim / Vinho profundo</td><td>15,89 : 1</td><td class="ok">AAA</td><td>CTA final, rodapé</td></tr>
+          <tr><td><span class="par" style="background:#2E0D17;color:#D8C29C">Apoio no escuro</span></td><td>Champanhe claro / Vinho profundo</td><td>10,22 : 1</td><td class="ok">AAA</td><td>Texto de apoio no escuro</td></tr>
+          <tr><td><span class="par" style="background:#5E1A2E;color:#D8C29C">Apoio no vinho</span></td><td>Champanhe claro / Vinho</td><td>7,29 : 1</td><td class="ok">AAA</td><td>Card do Método RPP</td></tr>
+          <tr><td><span class="par" style="background:#F7F2EA;color:#B8976A">Champanhe</span></td><td>Champanhe / Marfim</td><td>2,46 : 1</td><td class="fail">Reprova</td><td>Proibido como texto. Só fio, ícone e numeral grande decorativo</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ====================== 04 TIPOGRAFIA ====================== -->
+<section class="doc doc--areia" id="tipografia">
+  <div class="wrap">
+    <div class="doc__head">
+      <div class="doc__num">04</div>
+      <div>
+        <h2>Tipografia: serifa para emocionar, sans para informar</h2>
+        <p>Newsreader conversa com o desenho clássico do monograma e com as letras serifadas da fachada, tem contraste de revista nos tamanhos grandes e acentos bem desenhados para o português (testamos Cormorant: o circunflexo alto e solto atrapalha palavras como "Essência"). Manrope cuida de tudo que precisa ser lido rápido. A serifa nunca aparece abaixo de 20 px.</p>
+      </div>
+    </div>
+
+    <div class="par-fontes">
+      <div class="fonte">
+        <p class="sub">Display</p>
+        <div class="fonte__aa serif" style="font-weight:300">Aa <span class="it" style="color:var(--c-vinho)">Aa</span></div>
+        <p><b style="color:var(--c-tinta)">Newsreader</b> · Google Fonts · eixo óptico 6 a 72, pesos 300, 400 e 500, itálico 300 e 400. Itálico em vinho para a palavra que carrega a emoção do título, uma por título.</p>
+      </div>
+      <div class="fonte">
+        <p class="sub">Texto</p>
+        <div class="fonte__aa" style="font-family:var(--f-texto);font-weight:500;letter-spacing:-.02em">Aa</div>
+        <p><b style="color:var(--c-tinta)">Manrope</b> · Google Fonts · pesos 400, 500, 600 e 700. Números tabulares nos registros profissionais.</p>
+      </div>
+    </div>
+
+    <div class="tipo">
+      <div class="tipo__linha"><div class="tipo__nome">Display</div><div class="serif" style="font-size:76px;line-height:1;letter-spacing:-.015em;font-weight:300">Bem <em style="color:var(--c-vinho)">cuidada.</em></div><div class="tipo__spec"><b>Newsreader 300</b><br>Desktop 76 / 1,0<br>Celular 44 / 1,04<br>Tracking −1,5%</div></div>
+      <div class="tipo__linha"><div class="tipo__nome">H1</div><div class="serif bal" style="font-size:56px;line-height:1.04;letter-spacing:-.015em;font-weight:300">O primeiro passo para sua transformação</div><div class="tipo__spec"><b>Newsreader 300</b><br>Desktop 56 / 1,04<br>Celular 38 / 1,06</div></div>
+      <div class="tipo__linha"><div class="tipo__nome">H2</div><div class="serif bal" style="font-size:44px;line-height:1.06;letter-spacing:-.01em;font-weight:300">Um ecossistema completo</div><div class="tipo__spec"><b>Newsreader 300</b><br>Desktop 44 / 1,06<br>Celular 32 / 1,1</div></div>
+      <div class="tipo__linha"><div class="tipo__nome">H3</div><div class="serif" style="font-size:28px;line-height:1.12;font-weight:400">Centro cirúrgico próprio</div><div class="tipo__spec"><b>Newsreader 400</b><br>Desktop 28 / 1,12<br>Celular 24 / 1,15</div></div>
+      <div class="tipo__linha"><div class="tipo__nome">H4</div><div style="font-size:20px;line-height:1.3;font-weight:600">Recepção e acolhimento</div><div class="tipo__spec"><b>Manrope 600</b><br>Desktop 20 / 1,3<br>Celular 17 / 1,35</div></div>
+      <div class="tipo__linha"><div class="tipo__nome">Lead</div><div style="font-size:19px;line-height:1.6;color:var(--c-tinta-suave);max-width:58ch">Especialistas experientes, estrutura completa e acolhimento em cada detalhe, antes, durante e depois do procedimento.</div><div class="tipo__spec"><b>Manrope 400</b><br>Desktop 19 / 1,6<br>Celular 17 / 1,6<br>Máx. 58 caracteres por linha</div></div>
+      <div class="tipo__linha"><div class="tipo__nome">Corpo</div><div style="font-size:16px;line-height:1.7;max-width:66ch">A equipe multidisciplinar acompanha você da primeira consulta à recuperação. Cada plano é individual e começa com uma avaliação presencial.</div><div class="tipo__spec"><b>Manrope 400</b><br>16 / 1,7 nos dois<br>Máx. 66 caracteres por linha</div></div>
+      <div class="tipo__linha"><div class="tipo__nome">Legenda</div><div style="font-size:13px;line-height:1.5;color:var(--c-tinta-suave)">Recepção do Complexo SC · foto provisória</div><div class="tipo__spec"><b>Manrope 400</b><br>13 / 1,5 nos dois</div></div>
+      <div class="tipo__linha"><div class="tipo__nome">Eyebrow</div><div><span class="eyebrow">Cirurgia plástica e estética</span></div><div class="tipo__spec"><b>Manrope 700 · caixa alta</b><br>Desktop 12 · Celular 11<br>Tracking 18% · fio champanhe 28 px</div></div>
+      <div class="tipo__linha"><div class="tipo__nome">Botão</div><div><span class="btn">Agendar avaliação <svg><use href="#seta"/></svg></span></div><div class="tipo__spec"><b>Manrope 600</b><br>15 / 1 nos dois<br>Caixa normal, nunca tudo maiúsculo</div></div>
+      <div class="tipo__linha"><div class="tipo__nome">Registro</div><div><span class="pro__reg" style="border:0;padding:0;margin:0">CRM 8688 · RQE 4045</span></div><div class="tipo__spec"><b>Manrope 700 · caixa alta</b><br>11 / 1,4 · tracking 12%<br>Números tabulares</div></div>
+    </div>
+    <p class="nota">Regras: <b>text-wrap: balance</b> em todo título e <b>text-wrap: pretty</b> em parágrafos, para não deixar palavra sozinha na última linha. Sem travessão na copy: vírgula, ponto ou dois pontos. Títulos em caixa de frase, nunca Em Caixa De Título.</p>
+  </div>
+</section>
+
+<!-- ====================== 05 GRID ====================== -->
+<section class="doc" id="grid">
+  <div class="wrap">
+    <div class="doc__head">
+      <div class="doc__num">05</div>
+      <div>
+        <h2>Grid, espaço, raios e tokens</h2>
+        <p>Muito respiro e poucas linhas. A estrutura é de revista: blocos assimétricos (7 + 5, 8 + 4) em vez de tudo centralizado, e seções separadas por espaço, não por ondas.</p>
+      </div>
+    </div>
+
+    <div class="grid-demo">
+      <div class="grid-demo__cols"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+      <div class="grid-demo__conteudo"><div class="a">7 colunas · título e imagem principal</div><div class="b">5 colunas · texto de apoio e ação</div></div>
+    </div>
+    <div class="grid-legenda">
+      <div><b>Desktop · 12 colunas</b>Conteúdo máx. 1240 px, gutter 24 px, margem lateral 64 px.</div>
+      <div><b>Tablet · 8 colunas</b>Gutter 20 px, margem 32 px. Blocos 7 + 5 viram 8 + 8 empilhados.</div>
+      <div><b>Celular · 4 colunas</b>Gutter 16 px, margem 20 px. Uma coluna de leitura e a equipe em duas.</div>
+    </div>
+
+    <div class="bloco">
+      <p class="sub">Espaçamento · base 4</p>
+      <div class="espacos">
+        <div class="espaco"><i style="width:4px;height:4px"></i>4</div>
+        <div class="espaco"><i style="width:8px;height:8px"></i>8</div>
+        <div class="espaco"><i style="width:12px;height:12px"></i>12</div>
+        <div class="espaco"><i style="width:16px;height:16px"></i>16</div>
+        <div class="espaco"><i style="width:24px;height:24px"></i>24</div>
+        <div class="espaco"><i style="width:32px;height:32px"></i>32</div>
+        <div class="espaco"><i style="width:48px;height:48px"></i>48</div>
+        <div class="espaco"><i style="width:64px;height:64px"></i>64</div>
+        <div class="espaco"><i style="width:96px;height:96px"></i>96</div>
+        <div class="espaco"><i style="width:128px;height:128px"></i>128 · seção</div>
+        <div class="espaco"><i style="width:160px;height:160px"></i>160</div>
+      </div>
+      <p class="nota">Entre seções: 128 px no desktop, 72 px no celular (token <b>--secao</b>). Entre título e conteúdo: 48 px. Dentro de cards: 24 a 32 px.</p>
+    </div>
+
+    <div class="bloco">
+      <p class="sub">Raios</p>
+      <div class="raios">
+        <div class="raio"><i style="border-radius:4px"></i>4 · selo, tag pequena</div>
+        <div class="raio"><i style="border-radius:10px"></i>10 · imagem de apoio</div>
+        <div class="raio"><i style="border-radius:18px"></i>18 · card, foto</div>
+        <div class="raio"><i style="border-radius:28px"></i>28 · foto do hero</div>
+        <div class="raio"><i style="border-radius:999px;height:52px;margin-top:58px"></i>pílula · botão, tag</div>
+        <div class="raio"><i style="border-radius:999px 999px 18px 18px"></i>arco · retrato</div>
+      </div>
+      <p class="nota">O arco é herança direta das artes atuais da equipe. Ele fica, mas vira moldura do retrato e não fundo para texto.</p>
+    </div>
+
+    <div class="bloco">
+      <p class="sub">Tokens CSS, prontos para copiar</p>
+<pre class="codigo"><span class="c">/* cor */</span>
+--c-marfim: #F7F2EA;
+--c-areia: #EDE3D5;
+--c-linho: #FFFDF9;
+--c-linha: #E3D7C7;
+--c-tinta: #2B1B1F;
+--c-tinta-suave: #6A5558;
+--c-vinho: #5E1A2E;
+--c-vinho-profundo: #2E0D17;
+--c-champanhe: #B8976A;
+--c-champanhe-texto: #7A5B33;
+--c-champanhe-claro: #D8C29C;
+--c-whats: #1FA855;
+
+<span class="c">/* tipografia */</span>
+--f-display: "Newsreader", Georgia, serif;
+--f-texto: "Manrope", system-ui, sans-serif;
+--t-display: clamp(2.75rem, 1.9rem + 3.6vw, 4.75rem);
+--t-h1: clamp(2.375rem, 1.8rem + 2.4vw, 3.5rem);
+--t-h2: clamp(2rem, 1.6rem + 1.6vw, 2.75rem);
+--t-h3: clamp(1.5rem, 1.35rem + .6vw, 1.75rem);
+--t-h4: clamp(1.0625rem, 1rem + .2vw, 1.25rem);
+--t-lead: clamp(1.0625rem, 1rem + .3vw, 1.1875rem);
+--t-corpo: 1rem;
+--t-legenda: .8125rem;
+--t-eyebrow: clamp(.6875rem, .66rem + .1vw, .75rem);
+--t-botao: .9375rem;
+
+<span class="c">/* espaço e grid */</span>
+--s-1: 4px;  --s-2: 8px;  --s-3: 12px;
+--s-4: 16px; --s-5: 24px; --s-6: 32px;
+--s-7: 48px; --s-8: 64px; --s-9: 96px;
+--s-10: 128px; --s-11: 160px;
+--secao: clamp(72px, 4rem + 4vw, 128px);
+--conteudo: 1240px;
+--gutter: 24px;
+--margem: clamp(20px, 4vw, 64px);
+
+<span class="c">/* raios */</span>
+--r-xs: 4px; --r-s: 10px; --r-m: 18px;
+--r-l: 28px; --r-pill: 999px;
+--r-arco: 999px 999px 18px 18px;
+
+<span class="c">/* sombra e movimento */</span>
+--sh-1: 0 1px 2px rgb(43 27 31 / .05),
+        0 10px 28px -16px rgb(43 27 31 / .22);
+--ease: cubic-bezier(.22, 1, .36, 1);
+--d-1: 200ms; --d-2: 400ms;
+--d-3: 700ms; --d-4: 1200ms;</pre>
+    </div>
+  </div>
+</section>
+
+<!-- ====================== 06 COMPONENTES ====================== -->
+<section class="doc doc--areia" id="componentes">
+  <div class="wrap">
+    <div class="doc__head">
+      <div class="doc__num">06</div>
+      <div>
+        <h2>Componentes</h2>
+        <p>Um convite só, sempre com o mesmo texto: <b style="color:var(--c-vinho)">Agendar avaliação</b>. O WhatsApp é o segundo caminho, sempre ao lado e nunca no lugar do primário. Todo texto de exemplo aqui é copy provisória para validar com a clínica.</p>
+      </div>
+    </div>
+
+    <div class="vitrine">
+      <!-- botões -->
+      <div class="peca peca--12">
+        <div class="peca__rot">Botões <span>altura 52 px · pílula · área de toque mínima 44 px</span></div>
+        <div class="peca__palco">
+          <div class="estados">
+            <span></span><span class="h">Padrão</span><span class="h">Hover</span><span class="h">Foco</span><span class="h">Desativado</span>
+            <span class="h">Primário</span>
+            <span><span class="btn">Agendar avaliação <svg><use href="#seta"/></svg></span></span>
+            <span><span class="btn is-hover">Agendar avaliação <svg><use href="#seta"/></svg></span></span>
+            <span><span class="btn is-focus">Agendar avaliação <svg><use href="#seta"/></svg></span></span>
+            <span><span class="btn is-off">Agendar avaliação <svg><use href="#seta"/></svg></span></span>
+            <span class="h">Secundário</span>
+            <span><span class="btn btn--sec">Conhecer a estrutura</span></span>
+            <span><span class="btn btn--sec is-hover">Conhecer a estrutura</span></span>
+            <span><span class="btn btn--sec is-focus">Conhecer a estrutura</span></span>
+            <span><span class="btn btn--sec is-off">Conhecer a estrutura</span></span>
+            <span class="h">WhatsApp</span>
+            <span><span class="btn btn--wa"><svg class="wa"><use href="#wa"/></svg>Conversar no WhatsApp</span></span>
+            <span><span class="btn btn--wa is-hover"><svg class="wa"><use href="#wa"/></svg>Conversar no WhatsApp</span></span>
+            <span><span class="btn btn--wa is-focus"><svg class="wa"><use href="#wa"/></svg>Conversar no WhatsApp</span></span>
+            <span><span class="btn btn--wa is-off"><svg class="wa"><use href="#wa"/></svg>Conversar no WhatsApp</span></span>
+          </div>
+        </div>
+        <div class="peca__palco peca__palco--escuro" style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
+          <span class="btn btn--claro">Agendar avaliação <svg><use href="#seta"/></svg></span>
+          <span class="btn btn--fantasma-escuro"><svg class="wa"><use href="#wa"/></svg>Conversar no WhatsApp</span>
+          <span style="color:var(--c-champanhe-claro);font-size:13px;margin-left:12px">Sobre o vinho profundo, o primário inverte: fundo marfim, texto vinho.</span>
+        </div>
+      </div>
+
+      <!-- eyebrow + link -->
+      <div class="peca peca--4">
+        <div class="peca__rot">Eyebrow e link</div>
+        <div class="peca__palco" style="display:grid;gap:26px">
+          <span class="eyebrow">Especialidades</span>
+          <span class="eyebrow">Centro cirúrgico próprio</span>
+          <span><span class="link">Entender o procedimento <svg><use href="#seta"/></svg></span></span>
+          <span><span class="link is-hover">Ver a equipe completa <svg><use href="#seta"/></svg></span></span>
+        </div>
+      </div>
+
+      <!-- cards especialidade -->
+      <div class="peca peca--8">
+        <div class="peca__rot">Card de especialidade <span>padrão em hover e assinatura; o destaque de mama aparece no mockup</span></div>
+        <div class="peca__palco" style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+          <article class="esp is-hover">
+            <div class="esp__top"><span class="esp__n">02</span><span class="tag">Cirúrgico</span></div>
+            <h3>Lipoaspiração HD</h3>
+            <p>Contorno corporal preciso, respeitando as curvas e a harmonia do seu corpo.</p>
+            <div class="esp__rodape"><span class="link is-hover">Entender o procedimento <svg><use href="#seta"/></svg></span></div>
+          </article>
+          <article class="esp esp--assinatura">
+            <div class="esp__top"><span class="esp__n">06</span><span class="tag">Método da casa</span></div>
+            <h3>Método RPP</h3>
+            <p>Reestruturação pós-parto criada pela Dra. Olga Vieira para recuperar funcionalidade e estética depois da maternidade.</p>
+            <div class="esp__rodape"><span class="link">Conhecer o método <svg><use href="#seta"/></svg></span></div>
+          </article>
+        </div>
+      </div>
+
+      <!-- card profissional -->
+      <div class="peca peca--4">
+        <div class="peca__rot">Card de profissional</div>
+        <div class="peca__palco">
+          <article class="pro">
+            <div class="pro__foto"><img src="img/retrato-valderi.jpg" alt="Dr. Valderi Vieira" style="transform:scale(1.1)"></div>
+            <h3 class="pro__nome">Valderi Vieira</h3>
+            <p class="pro__cargo">Cirurgião plástico</p>
+            <p class="pro__reg">CRM 8688 · RQE 4045</p>
+            <p class="pro__bio">Contorno corporal e facial, com foco em resultados naturais.</p>
+          </article>
+        </div>
+      </div>
+
+      <div class="peca peca--8">
+        <div class="peca__rot">Regras do card de profissional</div>
+        <div class="peca__palco" style="display:grid;gap:14px;font-size:15px;color:var(--c-tinta-suave)">
+          <p><b style="color:var(--c-tinta)">Foto limpa, texto fora da imagem.</b> Nome, cargo e registro em HTML: legível no celular, encontrável no Google, editável sem designer.</p>
+          <p><b style="color:var(--c-tinta)">Registro sempre visível.</b> CRM e RQE para médicos, CREFITO para fisioterapeutas, no mesmo lugar e no mesmo estilo. Registro que não se confirma não entra.</p>
+          <p><b style="color:var(--c-tinta)">Sem frase de efeito na foto.</b> A citação de cada profissional, se ficar, vai para a página individual.</p>
+          <p><b style="color:var(--c-tinta)">A confirmar com a clínica:</b> nome da fisioterapeuta do Método RPP (arte diz "Olgà Ramos", site diz "Olga Vieira"), área de Diana Saboya (arte diz fisioterapeuta, CREFITO 115.958; site diz "Médica e bem-estar"), RQE da Dra. Andreia Mendes (arte mostra CRM 9683) e o uso de "Dr./Dra." para cada conselho.</p>
+        </div>
+      </div>
+
+      <!-- selos -->
+      <div class="peca peca--12">
+        <div class="peca__rot">Selo de confiança <span>só fatos verificáveis, sem número inventado</span></div>
+        <div class="peca__palco">
+          <div class="selos">
+            <div class="selo"><svg><use href="#i-cirurgia"/></svg><div><b>Centro cirúrgico próprio</b><span>Equipe anestésica especializada</span></div></div>
+            <div class="selo"><svg><use href="#i-registro"/></svg><div><b>CRM 8688 · RQE 4045</b><span>Cirurgião plástico responsável</span></div></div>
+            <div class="selo"><svg><use href="#i-equipe"/></svg><div><b>Fisioterapia no pós‑operatório</b><span>Acompanhamento até a recuperação</span></div></div>
+            <div class="selo"><svg><use href="#i-cafe"/></svg><div><b>Cafeteria Beike anexa</b><span>Hospitalidade na espera e no pós</span></div></div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- galeria de resultados -->
+      <div class="peca peca--12">
+        <div class="peca__rot">Galeria de resultados <span>discreta, com véu, aviso e contexto clínico em cada caso</span></div>
+        <div class="peca__palco">
+          <div class="gal__aviso"><svg><use href="#i-info"/></svg><p><b>Resultados variam de pessoa para pessoa.</b> As imagens são de pacientes reais, publicadas com autorização por escrito e sem identificação, em caráter educativo. Elas não são promessa de resultado: indicação, riscos e recuperação de cada caso são avaliados em consulta.</p></div>
+          <div class="gal">
+            <article class="caso"><div class="caso__img"><div>[Antes · foto autorizada]</div><div>[Depois · foto autorizada]</div><div class="caso__veu"><span>Imagem de resultado cirúrgico</span><span class="btn btn--sec">Ver imagem</span></div></div>
+              <div class="caso__txt"><span class="tag">Prótese de mama</span><h4>Caso <span class="ph-claro">[nº]</span></h4><p>Pós-operatório de <span class="ph-claro">[x meses]</span> · <span class="ph-claro">[indicação resumida]</span>. Evolução e cuidados explicados na consulta.</p><p class="pro__reg">Cirurgião: CRM 8688 · RQE 4045</p></div></article>
+            <article class="caso"><div class="caso__img"><div>[Antes · foto autorizada]</div><div>[Depois · foto autorizada]</div><div class="caso__veu"><span>Imagem de resultado cirúrgico</span><span class="btn btn--sec">Ver imagem</span></div></div>
+              <div class="caso__txt"><span class="tag">Mastopexia</span><h4>Caso <span class="ph-claro">[nº]</span></h4><p>Pós-operatório de <span class="ph-claro">[x meses]</span> · <span class="ph-claro">[indicação resumida]</span>. Evolução e cuidados explicados na consulta.</p><p class="pro__reg">Cirurgião: CRM 8688 · RQE 4045</p></div></article>
+            <article class="caso"><div class="caso__img"><div>[Antes · foto autorizada]</div><div>[Depois · foto autorizada]</div></div>
+              <div class="caso__txt"><span class="tag">Estado aberto</span><h4>Depois do clique</h4><p>A paciente escolhe ver. O véu some com fade de 400 ms e a legenda continua visível embaixo da imagem.</p><p class="pro__reg">Mesmo enquadramento · mesma luz</p></div></article>
+          </div>
+          <div class="gal__regras">
+            <div><b>Fora do hero e da home</b>A galeria vive na página de cada procedimento, abaixo das informações de indicação e recuperação. Nunca abre a página.</div>
+            <div><b>Mesmo padrão de foto</b>Mesmo fundo neutro, mesma luz, mesma distância e postura no antes e no depois. Sem edição, sem filtro, sem rosto ou tatuagem que identifique.</div>
+            <div><b>Validação obrigatória</b>Seguir a Resolução CFM nº 2.336/2023 sobre publicidade médica e validar cada publicação com o responsável técnico e o jurídico da clínica.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- depoimento -->
+      <div class="peca peca--6" style="grid-column:span 6">
+        <div class="peca__rot">Depoimento <span>espaço reservado</span></div>
+        <div class="peca__palco">
+          <figure class="dep" style="margin:0">
+            <div class="dep__aspas">“</div>
+            <blockquote class="dep__txt" style="margin:0"><span class="dep__ph">[Depoimento real de paciente, com autorização por escrito, até 280 caracteres]</span></blockquote>
+            <figcaption class="dep__quem"><i></i><div><b>[Nome ou iniciais]</b><span class="muted">[Procedimento] · [mês e ano]</span></div></figcaption>
+          </figure>
+          <p class="nota">Nenhum depoimento foi inventado. Antes de publicar, validar com a clínica o que as normas de publicidade médica permitem em depoimentos e fotos de pacientes.</p>
+        </div>
+      </div>
+
+      <!-- FAQ -->
+      <div class="peca" style="grid-column:span 6">
+        <div class="peca__rot">FAQ <span>um item aberto por vez</span></div>
+        <div class="peca__palco">
+          <div class="faq">
+            <div class="faq__item is-open">
+              <div class="faq__q">A cirurgia é segura?<span class="faq__ic"></span></div>
+              <p class="faq__a">Toda cirurgia tem riscos, e é por isso que a clínica opera em centro cirúrgico próprio, com equipe anestésica especializada e protocolos de segurança. Na avaliação, o cirurgião explica os cuidados do seu caso.<small>Copy sugerida, validar com o Dr. Valderi Vieira</small></p>
+            </div>
+            <div class="faq__item"><div class="faq__q">Como é a recuperação da cirurgia de mama?<span class="faq__ic"></span></div></div>
+            <div class="faq__item"><div class="faq__q">Como ficam as cicatrizes?<span class="faq__ic"></span></div></div>
+            <div class="faq__item"><div class="faq__q">Como é definido o investimento?<span class="faq__ic"></span></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- header -->
+      <div class="peca peca--12">
+        <div class="peca__rot">Header <span>topo da página e estado após rolar (fundo translúcido, fio inferior, mais baixo)</span></div>
+        <div style="background:var(--c-marfim)">
+          <div class="s-header">
+            <a class="s-marca" href="#"><img src="img/logo-vinho.png" alt=""><div><b>Complexo SC</b><span>Medicina · Estética · Educação</span></div></a>
+            <nav class="s-nav"><a class="on" href="#">Especialidades</a><a href="#">Estrutura</a><a href="#">Equipe</a><a href="#">Dúvidas</a><a href="#">Contato</a></nav>
+            <span class="btn">Agendar avaliação</span>
+          </div>
+          <div class="s-header s-header--rolado" style="margin-top:12px">
+            <a class="s-marca" href="#"><img src="img/logo-vinho.png" alt=""><div><b>Complexo SC</b><span>Medicina · Estética · Educação</span></div></a>
+            <nav class="s-nav"><a href="#">Especialidades</a><a class="on" href="#">Estrutura</a><a href="#">Equipe</a><a href="#">Dúvidas</a><a href="#">Contato</a></nav>
+            <span class="btn">Agendar avaliação</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- rodapé -->
+      <div class="peca peca--12">
+        <div class="peca__rot">Rodapé <span>endereço, horário e responsável técnico sempre presentes</span></div>
+        <footer class="s-rodape">
+          <div class="s-rodape__grid">
+            <div><a class="s-marca" href="#"><img src="img/logo-marfim.png" alt=""><div><b>Complexo SC</b><span>Medicina · Estética · Educação</span></div></a><p style="margin-top:18px;max-width:34ch">Cirurgia plástica e estética com centro cirúrgico próprio e acolhimento em cada etapa.</p></div>
+            <div><h5>Navegação</h5><ul><li>Especialidades</li><li>Estrutura</li><li>Equipe</li><li>Dúvidas</li></ul></div>
+            <div><h5>Contato</h5><ul><li>WhatsApp (85) <span class="ph">[número]</span></li><li><span class="ph">[e-mail]</span></li><li><span class="ph">[Instagram]</span></li></ul></div>
+            <div><h5>Endereço</h5><p><span class="ph">[Rua, número, bairro, Fortaleza/CE]</span><br><span class="ph">[Horário de atendimento]</span></p></div>
+          </div>
+          <div class="s-rodape__base"><span>© 2026 Complexo SC</span><span>Responsável técnico: <span class="ph">[Nome]</span> · CRM <span class="ph">[número]</span></span></div>
+        </footer>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====================== 07 IMAGEM ====================== -->
+<section class="doc" id="imagem">
+  <div class="wrap">
+    <div class="doc__head">
+      <div class="doc__num">07</div>
+      <div>
+        <h2>Direção de imagem</h2>
+        <p>A foto de equipe já mostra o caminho: cenário areia, luz quente e difusa, roupas claras, pessoas olhando para a câmera com calma. Toda foto nova deve parecer feita no mesmo dia, pela mesma pessoa.</p>
+      </div>
+    </div>
+
+    <div class="regras">
+      <div class="regra"><h4>Luz</h4><p>Quente e difusa (em torno de 3200 K), vinda de janela ou rebatida no teto. Sombras macias, nunca pretas. Nada de luz fria de teto nem flash direto.</p></div>
+      <div class="regra"><h4>Enquadramento</h4><p>Retratos em plano médio, na altura dos olhos, fundo do próprio ambiente desfocado. Ambientes na diagonal, com profundidade e sem pessoas de passagem. Muitos detalhes: mãos, texturas, mármore, café servido.</p></div>
+      <div class="regra"><h4>Cor</h4><p>Tratamento levemente quente, saturação um pouco abaixo do natural, pretos levantados. Nenhum filtro bordô por cima: o vinho entra no layout, não na foto.</p></div>
+    </div>
+
+    <div class="bloco">
+      <p class="sub">As fotos que existem hoje</p>
+      <div class="fotos">
+        <div class="foto foto--2"><div class="foto__img"><img src="img/equipe-hero.jpg" alt="Foto da equipe" style="object-position:50% 30%"><span class="chip chip--ok">Usar</span></div><div class="foto__txt"><b>Equipe no lounge</b>Referência de todo o sistema. Vai para o hero inteira, sem véu. Pedir o arquivo original em alta.</div></div>
+        <div class="foto"><div class="foto__img"><img src="img/beike.jpg" alt="Fachada da Beike"><span class="chip chip--aj">Ajustar</span></div><div class="foto__txt"><b>Fachada Beike</b>Serve hoje. Falta o interior: café servido, balcão, mesa de espera.</div></div>
+        <div class="foto"><div class="foto__img"><img src="img/fachada-recorte.jpg" alt="Fachada do Complexo SC" style="object-position:50% 30%"><span class="chip chip--aj">Ajustar</span></div><div class="foto__txt"><b>Fachada Complexo SC</b>É quadro de vídeo vertical de celular. Refazer na horizontal, fim de tarde, céu limpo.</div></div>
+        <div class="foto"><div class="foto__img"><img src="img/recepcao.jpg" alt="Recepção"><span class="chip chip--re">Refazer</span></div><div class="foto__txt"><b>Recepção</b>Decoração de Copa, TV ligada, luz fria e pessoas trabalhando. Refazer vazia, com luz quente.</div></div>
+        <div class="foto"><div class="foto__img"><img src="img/apartamento.jpg" alt="Render do apartamento"><span class="chip chip--re">Substituir</span></div><div class="foto__txt"><b>Apartamento (render 3D)</b>Não pode ilustrar o centro cirúrgico. Trocar por foto real, ou usar com o aviso "imagem ilustrativa".</div></div>
+        <div class="foto"><div class="foto__img"><img src="img/valderi.png" alt="Arte do Dr. Valderi" style="object-position:50% 0"><span class="chip chip--re">Refazer</span></div><div class="foto__txt"><b>Artes da equipe</b>Texto embutido e fundos diferentes. Refazer retratos individuais no cenário do lounge.</div></div>
+        <div class="foto"><div class="foto__img" style="display:flex;align-items:center;justify-content:center;background:linear-gradient(160deg,#E9DDCC,#DFD0BC)"><img src="img/logo-vinho.png" alt="" style="width:56px;height:auto;opacity:.5"><span class="chip chip--re">Não existe</span></div><div class="foto__txt"><b>Centro cirúrgico</b>A prova mais forte do site e não há nenhuma foto. Prioridade 1 da sessão.</div></div>
+      </div>
+    </div>
+
+    <div class="bloco grade">
+      <figure><div class="gi"><img src="img/recepcao.jpg" alt="Recepção sem tratamento"></div><figcaption>Recepção como está: luz fria de teto, objetos sazonais, tela ligada.</figcaption></figure>
+      <figure><div class="gi"><img class="tratada" src="img/recepcao.jpg" alt="Recepção com tratamento de cor"></div><figcaption>Com o tratamento de cor do sistema a temperatura melhora, mas os objetos continuam. Prova de que essa foto precisa ser refeita, não editada.</figcaption></figure>
+    </div>
+
+    <div class="bloco evitar">
+      <div class="lista lista--sim"><h4>Lista da sessão de fotos</h4><ul><li>Centro cirúrgico com a sala pronta e a equipe paramentada</li><li>Apartamento de recuperação real</li><li>Recepção vazia, luz quente, sem TV ligada</li><li>Retrato individual de cada profissional no lounge da foto de equipe</li><li>Interior da Beike, com café e doces servidos</li><li>Detalhes: mãos em consulta, mármore, textura das paredes</li><li>Fachada horizontal no fim da tarde</li></ul></div>
+      <div class="lista lista--nao"><h4>O que evitar</h4><ul><li>Véu ou filtro bordô sobre fotos</li><li>Texto, moldura ou frase dentro da imagem</li><li>Decoração sazonal, telas ligadas, fios e cartazes</li><li>Render apresentado como foto real</li><li>Banco de imagem de modelo genérica</li><li>Antes e depois sem validação das normas de publicidade médica</li><li>Foto de celular vertical esticada em espaço horizontal</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<!-- ====================== 08 MOTION ====================== -->
+<section class="doc doc--areia" id="motion">
+  <div class="wrap">
+    <div class="doc__head">
+      <div class="doc__num">08</div>
+      <div>
+        <h2>Movimento: como uma porta que se abre devagar</h2>
+        <p>No protótipo, o movimento conduz a leitura: a página anda no ritmo da rolagem, abre fotos como cortinas e acende o texto aos poucos. Se a paciente percebe a animação antes do conteúdo, ela está forte demais.</p>
+      </div>
+    </div>
+
+    <div class="motion">
+      <div class="principio"><span class="n">01</span><h4>Guiado pela rolagem</h4><p>Quase tudo acompanha a rolagem com um pequeno atraso, entre 0,6 e 0,8 s, e a roda do mouse é suavizada. Quem rola devagar vê devagar; quem para, para a cena.</p></div>
+      <div class="principio"><span class="n">02</span><h4>Abre, não desliza</h4><p>Fotos entram por máscara, de dentro para fora ou de baixo para cima, e assentam de um leve zoom. Texto nasce de dentro da própria linha. Nada gira, quica ou pisca.</p></div>
+      <div class="principio"><span class="n">03</span><h4>Lento e uma vez</h4><p>Entradas por tempo duram de 1,1 a 2,6 s e acontecem uma vez. Com "reduzir movimento" ativo no aparelho, nada fica fixo e tudo aparece direto.</p></div>
+    </div>
+
+    <div class="bloco curva">
+      <svg viewBox="0 0 300 200" width="300" height="200" aria-label="Curva de aceleração">
+        <rect x="20" y="10" width="260" height="170" fill="none" stroke="#E3D7C7"/>
+        <path d="M20 180 C 62 10, 98 10, 280 10" fill="none" stroke="#5E1A2E" stroke-width="2.5"/>
+        <path d="M20 180 L 280 10" fill="none" stroke="#B8976A" stroke-dasharray="4 5"/>
+        <text x="24" y="196" font-size="11" fill="#6A5558" font-family="Manrope">tempo</text>
+        <text x="190" y="30" font-size="11" fill="#5E1A2E" font-family="Manrope">expo.out</text>
+      </svg>
+      <div>
+        <p class="sub">Entrada por tempo, quadro a quadro</p>
+        <div class="quadros">
+          <div class="quadro" style="opacity:.25"><i style="top:46px;transform:translateY(16px)"></i><i style="top:70px;transform:translateY(16px)"></i><span>0 ms</span></div>
+          <div class="quadro" style="opacity:.8"><i style="top:46px;transform:translateY(4px)"></i><i style="top:70px;transform:translateY(7px)"></i><span>300 ms</span></div>
+          <div class="quadro" style="opacity:.97"><i style="top:46px;transform:translateY(1px)"></i><i style="top:70px;transform:translateY(2px)"></i><span>700 ms</span></div>
+          <div class="quadro"><i style="top:46px"></i><i style="top:70px"></i><span>1300 ms</span></div>
+        </div>
+        <p class="nota">Curva principal: <code style="font-size:12.5px;color:var(--c-vinho)">expo.out</code>, perto de <code style="font-size:12.5px;color:var(--c-vinho)">cubic-bezier(.16, 1, .3, 1)</code>. Quase todo o caminho acontece no começo e o final desacelera longamente: a sensação é de assentar, não de chegar. Cortinas usam <code style="font-size:12.5px;color:var(--c-vinho)">power2.inOut</code>.</p>
+      </div>
+    </div>
+
+    <div class="bloco">
+      <p class="sub">O que o protótipo faz, seção por seção</p>
+      <table class="micro">
+        <thead><tr><th>Onde</th><th>O que acontece</th><th>Tempo</th></tr></thead>
+        <tbody>
+          <tr><td>Abertura do hero</td><td>A foto da equipe abre do centro para as bordas por máscara e assenta de um zoom de 118%. O título sobe linha a linha de dentro da máscara; texto e botões chegam depois. Ao rolar, a foto recua para 94% e o bloco de texto sobe e esmaece.</td><td><code>2,2 s máscara</code><br><code>1,6 s linhas</code><br><code>expo.out</code></td></tr>
+          <tr><td>Selos de confiança</td><td>Os quatro selos sobem em sequência e o fio champanhe de cada um se desenha da esquerda para a direita.</td><td><code>1,1 s · 140 ms</code></td></tr>
+          <tr><td>Jornada da mama</td><td>No desktop, a seção fica fixa por quatro passos. A cada passo, a próxima foto sobe como cortina, a anterior recua e o passo ativo acende enquanto os outros ficam em 28%. O trilho vertical enche e a rolagem encaixa no passo mais próximo. No celular não há trava: cada foto abre por cortina ao entrar.</td><td><code>scrub 0,8 s</code><br><code>encaixe 0,3 a 0,9 s</code></td></tr>
+          <tr><td>Galeria do cuidado</td><td>A seção fica fixa e a rolagem vertical vira deslocamento lateral da faixa de fotos, com barra de progresso. Cada foto ganha cor e tamanho cheio, de 92% para 100%, ao cruzar o centro da tela.</td><td><code>scrub 0,8 s · linear</code></td></tr>
+          <tr><td>Método RPP</td><td>As letras do letreiro acendem uma a uma, de champanhe apagado a marfim. A frase se preenche palavra por palavra, a sigla RPP ao fundo desliza devagar e o retrato da criadora abre de baixo, em arco.</td><td><code>40 ms por letra</code><br><code>scrub 0,8 s</code></td></tr>
+          <tr><td>Estrutura em camadas</td><td>No desktop, as fotos andam em velocidades diferentes e criam profundidade. Cada moldura abre de dentro para fora e a imagem assenta de 122% para 106%. No celular, só a abertura da moldura fica.</td><td><code>scrub 0,6 s</code></td></tr>
+          <tr><td>Equipe em sequência</td><td>Quando a grade chega a 80% da tela, os cartões sobem 60 px, os retratos abrem de baixo em arco e o fio do registro se desenha, um profissional depois do outro.</td><td><code>1,3 a 1,8 s</code><br><code>140 ms · expo.out</code></td></tr>
+          <tr><td>Cortina do CTA</td><td>A faixa escura aparece recuada, com cantos de 40 px, e cresce até ocupar a largura toda. O monograma gira de &minus;25° até assentar e os botões sobem em sequência.</td><td><code>scrub · 1,1 s botões</code></td></tr>
+          <tr><td>Títulos de seção</td><td>Palavra por palavra saindo de uma máscara quando o título chega a 88% da tela.</td><td><code>1,1 s · 60 ms</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="bloco">
+      <p class="sub">Microinterações</p>
+      <table class="micro">
+        <thead><tr><th>Onde</th><th>O que acontece</th><th>Tempo</th></tr></thead>
+        <tbody>
+          <tr><td>Foto ao passar o mouse</td><td>A imagem aproxima 3% dentro da moldura, como quem chega mais perto. O card não se mexe.</td><td><code>1200 ms · ease</code></td></tr>
+          <tr><td>Botão e link</td><td>Fundo escurece para o vinho profundo e a seta anda 4 px para a direita.</td><td><code>200 ms · 400 ms</code></td></tr>
+          <tr><td>FAQ</td><td>A resposta abre em altura com fade; o sinal de mais vira menos e o círculo ganha vinho.</td><td><code>400 ms · ease</code></td></tr>
+          <tr><td>Header ao rolar</td><td>Depois de 80 px, o header fica mais baixo, ganha fundo translúcido e um fio inferior.</td><td><code>300 ms · ease</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="bloco reduzido">
+      <p class="sub">Com movimento reduzido</p>
+      <div class="reduzido__grade">
+        <div><h4>Rolagem nativa</h4><p>A suavização da roda desliga e nenhuma seção fica fixa na tela.</p></div>
+        <div><h4>Mama em grade</h4><p>No desktop, os quatro passos viram uma grade estática, cada um com sua imagem.</p></div>
+        <div><h4>Cuidado com rolagem lateral</h4><p>A faixa de fotos rola para o lado pelo próprio gesto, sem barra de progresso.</p></div>
+        <div><h4>Tudo visível</h4><p>Títulos, letreiro do RPP e retratos aparecem prontos. Vídeos ficam parados no primeiro quadro.</p></div>
+      </div>
+    </div>
+
+    <div class="bloco evitar">
+      <div class="lista lista--nao"><h4>O que não fazer</h4><ul><li>Movimento que roda sozinho e se repete, sem depender da rolagem</li><li>Seção fixa sem indicador de progresso ou com mais de quatro paradas</li><li>Parallax forte no celular</li><li>Brilho dourado pulsando, ondas animadas, partículas</li><li>Contadores numéricos girando e carrossel que passa sozinho</li><li>Bounce, giro ou zoom de entrada em texto</li><li>Botão do WhatsApp chacoalhando para chamar atenção</li></ul></div>
+      <div class="lista lista--sim"><h4>Na implementação</h4><ul><li>GSAP com <b>ScrollTrigger</b> e <b>SplitText</b>, rolagem suavizada com <b>Lenis</b></li><li>Animar só <b>transform</b>, <b>opacity</b> e <b>clip-path</b></li><li><b>matchMedia</b> separa desktop, celular e movimento reduzido</li><li>Conteúdo legível mesmo se o script não carregar</li><li>O título do hero nunca espera a foto para aparecer</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<!-- ====================== 09 MOCKUPS ====================== -->
+<section class="doc" id="mockups">
+  <div class="wrap">
+    <div class="doc__head">
+      <div class="doc__num">09</div>
+      <div>
+        <h2>O protótipo animado, tela por tela</h2>
+        <p>Capturas do protótipo aprovado, no ar em <a href="https://evertonbrito.com/relatorio/stetic-class/prototipo">evertonbrito.com/relatorio/stetic-class/prototipo</a>, no desktop com 1440 px e no celular com 390 px. Onde há movimento, a tira mostra os estados da rolagem do início ao fim. Textos entre colchetes seguem aguardando confirmação da clínica.</p>
+      </div>
+    </div>
+
+    <!-- HERO -->
+    <div class="pt">
+      <div class="mock__titulo"><h3>Hero</h3><span>desktop 1440 px · celular 390 px</span></div>
+      <div class="pt__par">
+        <div class="tela"><div class="tela__barra"><i></i><i></i><i></i><span>evertonbrito.com/relatorio/stetic-class/prototipo</span></div><img src="img/prototipo/hero-desktop.webp" alt="Hero do protótipo no desktop com a equipe inteira"></div>
+        <div class="pt__cel"><img src="img/prototipo/hero-celular.webp" alt="Hero do protótipo no celular"></div>
+      </div>
+      <p class="pt__rotulo">Abertura e rolagem</p>
+      <div class="pt__tira">
+        <figure><img src="img/prototipo/hero-abre-1.webp" alt=""><figcaption><b>0,25 s</b>A foto abre do centro por máscara, ainda com zoom.</figcaption></figure>
+        <figure><img src="img/prototipo/hero-abre-2.webp" alt=""><figcaption><b>0,75 s</b>O título sobe linha a linha de dentro da máscara.</figcaption></figure>
+        <figure><img src="img/prototipo/hero-abre-3.webp" alt=""><figcaption><b>3 s</b>Texto, botões e foto assentados.</figcaption></figure>
+        <figure><img src="img/prototipo/hero-abre-4.webp" alt=""><figcaption><b>Rolagem</b>A foto recua de leve e os selos entram com o fio champanhe.</figcaption></figure>
+      </div>
+      <p class="pt__legenda">A equipe aparece inteira, sem cortes, logo abaixo da headline original. Na abertura, a foto se abre do centro para as bordas e o título nasce de dentro da linha.</p>
+    </div>
+
+    <!-- MAMA -->
+    <div class="pt">
+      <div class="mock__titulo"><h3>Cirurgia de mama</h3><span>jornada fixa em quatro passos</span></div>
+      <div class="pt__par">
+        <div class="tela"><div class="tela__barra"><i></i><i></i><i></i><span>evertonbrito.com/relatorio/stetic-class/prototipo/#mama</span></div><img src="img/prototipo/mama-desktop.webp" alt="Jornada da mama no desktop, passo 3"></div>
+        <div class="pt__cel"><img src="img/prototipo/mama-celular.webp" alt="Jornada da mama no celular"></div>
+      </div>
+      <p class="pt__rotulo">Estados da rolagem no desktop</p>
+      <div class="pt__tira">
+        <figure><img src="img/prototipo/mama-1.webp" alt=""><figcaption><b>Passo 01</b>Consulta acesa; os outros passos ficam em segundo plano.</figcaption></figure>
+        <figure><img src="img/prototipo/mama-2.webp" alt=""><figcaption><b>Troca</b>A próxima foto sobe como cortina e a anterior recua.</figcaption></figure>
+        <figure><img src="img/prototipo/mama-3.webp" alt=""><figcaption><b>Passo 02</b>Planejamento aceso e o trilho à esquerda avança.</figcaption></figure>
+        <figure><img src="img/prototipo/mama-4.webp" alt=""><figcaption><b>Passo 04</b>Pós-operatório; o trilho chega ao fim e a página segue.</figcaption></figure>
+      </div>
+      <p class="pt__legenda">A seção fica fixa enquanto a rolagem percorre os quatro passos, e cada parada encaixa sozinha no passo mais próximo. No celular não há trava: cada passo traz a própria foto, que abre por cortina ao entrar na tela.</p>
+    </div>
+
+    <!-- CUIDADO -->
+    <div class="pt">
+      <div class="mock__titulo"><h3>Padrão de cuidado</h3><span>galeria fixa, fotos andam para o lado</span></div>
+      <div class="pt__par">
+        <div class="tela"><div class="tela__barra"><i></i><i></i><i></i><span>evertonbrito.com/relatorio/stetic-class/prototipo/#cuidado</span></div><img src="img/prototipo/cuidado-desktop.webp" alt="Galeria do cuidado no desktop"></div>
+        <div class="pt__cel"><img src="img/prototipo/cuidado-celular.webp" alt="Galeria do cuidado no celular"></div>
+      </div>
+      <p class="pt__rotulo">Estados da rolagem no desktop</p>
+      <div class="pt__tira" style="--n:3">
+        <figure><img src="img/prototipo/cuidado-1.webp" alt=""><figcaption><b>Entrada</b>A seção trava no topo com a faixa parada.</figcaption></figure>
+        <figure><img src="img/prototipo/cuidado-2.webp" alt=""><figcaption><b>Meio</b>A rolagem vira passo lateral e a barra de progresso acompanha.</figcaption></figure>
+        <figure><img src="img/prototipo/cuidado-3.webp" alt=""><figcaption><b>Fim</b>As últimas fotos chegam e a página volta a descer.</figcaption></figure>
+      </div>
+      <p class="pt__rotulo">No celular</p>
+      <div class="pt__tira pt__tira--cel">
+        <figure><img src="img/prototipo/cuidado-cel-1.webp" alt=""><figcaption><b>Início</b>Uma foto por vez.</figcaption></figure>
+        <figure><img src="img/prototipo/cuidado-cel-2.webp" alt=""><figcaption><b>Meio</b>A faixa anda com o polegar.</figcaption></figure>
+        <figure><img src="img/prototipo/cuidado-cel-3.webp" alt=""><figcaption><b>Fim</b>A barra completa.</figcaption></figure>
+      </div>
+      <p class="pt__legenda">A galeria fica fixa e as fotos passam para o lado conforme a rolagem. Cada foto ganha cor e tamanho cheio ao cruzar o centro da tela, como quem se aproxima de um bastidor real.</p>
+    </div>
+
+    <!-- RPP -->
+    <div class="pt">
+      <div class="mock__titulo"><h3>Método RPP</h3><span>a única faixa vinho do meio da página</span></div>
+      <div class="pt__par">
+        <div class="tela"><div class="tela__barra"><i></i><i></i><i></i><span>evertonbrito.com/relatorio/stetic-class/prototipo/#rpp</span></div><img src="img/prototipo/rpp-desktop.webp" alt="Método RPP no desktop"></div>
+        <div class="pt__cel"><img src="img/prototipo/rpp-celular.webp" alt="Método RPP no celular"></div>
+      </div>
+      <p class="pt__rotulo">Estados da rolagem no desktop</p>
+      <div class="pt__tira" style="--n:3">
+        <figure><img src="img/prototipo/rpp-1.webp" alt=""><figcaption><b>Entrando</b>O letreiro chega apagado, em champanhe, e as primeiras letras acendem.</figcaption></figure>
+        <figure><img src="img/prototipo/rpp-2.webp" alt=""><figcaption><b>Meio</b>O nome aceso e a frase se preenchendo palavra por palavra.</figcaption></figure>
+        <figure><img src="img/prototipo/rpp-3.webp" alt=""><figcaption><b>Lido</b>Tudo aceso e o retrato da criadora aberto em arco.</figcaption></figure>
+      </div>
+      <p class="pt__legenda">As letras acendem uma a uma no ritmo da rolagem, e a sigla RPP ao fundo desliza devagar. A leitura acontece junto com o movimento, sem esperar animação terminar.</p>
+    </div>
+
+    <!-- ESTRUTURA -->
+    <div class="pt">
+      <div class="mock__titulo"><h3>Estrutura</h3><span>camadas em velocidades diferentes</span></div>
+      <div class="pt__par">
+        <div class="tela"><div class="tela__barra"><i></i><i></i><i></i><span>evertonbrito.com/relatorio/stetic-class/prototipo/#estrutura</span></div><img src="img/prototipo/estrutura-desktop.webp" alt="Estrutura no desktop"></div>
+        <div class="pt__cel"><img src="img/prototipo/estrutura-celular.webp" alt="Estrutura no celular"></div>
+      </div>
+      <p class="pt__rotulo">Estados da rolagem no desktop</p>
+      <div class="pt__tira" style="--n:3">
+        <figure><img src="img/prototipo/estrutura-1.webp" alt=""><figcaption><b>Entrada</b>Recepção e Beike em alturas diferentes.</figcaption></figure>
+        <figure><img src="img/prototipo/estrutura-2.webp" alt=""><figcaption><b>Meio</b>Cada camada anda na sua velocidade e as molduras abrem.</figcaption></figure>
+        <figure><img src="img/prototipo/estrutura-3.webp" alt=""><figcaption><b>Fim</b>Apartamento e o lugar reservado à foto do centro cirúrgico.</figcaption></figure>
+      </div>
+      <p class="pt__legenda">As fotos andam em velocidades diferentes e criam profundidade sem efeito forte. O centro cirúrgico segue marcado como foto a produzir na sessão, nunca preenchido com render.</p>
+    </div>
+
+    <!-- EQUIPE -->
+    <div class="pt">
+      <div class="mock__titulo"><h3>Equipe</h3><span>entrada em sequência, uma vez</span></div>
+      <div class="pt__par">
+        <div class="tela"><div class="tela__barra"><i></i><i></i><i></i><span>evertonbrito.com/relatorio/stetic-class/prototipo/#equipe</span></div><img src="img/prototipo/equipe-desktop.webp" alt="Equipe no desktop"></div>
+        <div class="pt__cel"><img src="img/prototipo/equipe-celular.webp" alt="Equipe no celular"></div>
+      </div>
+      <p class="pt__rotulo">Sequência no desktop</p>
+      <div class="pt__tira">
+        <figure><img src="img/prototipo/equipe-1.webp" alt=""><figcaption><b>0,45 s</b>Título no lugar; os cartões começam a subir.</figcaption></figure>
+        <figure><img src="img/prototipo/equipe-2.webp" alt=""><figcaption><b>0,8 s</b>Os retratos abrem de baixo, em arco, um depois do outro.</figcaption></figure>
+        <figure><img src="img/prototipo/equipe-3.webp" alt=""><figcaption><b>1,15 s</b>Terceiro e quarto retratos chegando.</figcaption></figure>
+        <figure><img src="img/prototipo/equipe-4.webp" alt=""><figcaption><b>2,8 s</b>Grade completa e o fio do registro desenhado.</figcaption></figure>
+      </div>
+      <p class="pt__legenda">Os quatro profissionais entram em sequência, com 140 ms entre um e outro, quando a grade chega à tela. No celular, a grade vira 2 × 2.</p>
+    </div>
+
+    <!-- CTA -->
+    <div class="pt">
+      <div class="mock__titulo"><h3>CTA final e rodapé</h3><span>a cortina que fecha a página</span></div>
+      <div class="pt__par">
+        <div class="tela"><div class="tela__barra"><i></i><i></i><i></i><span>evertonbrito.com/relatorio/stetic-class/prototipo/#contato</span></div><img src="img/prototipo/cta-desktop.webp" alt="CTA final e rodapé no desktop"></div>
+        <div class="pt__cel"><img src="img/prototipo/cta-celular.webp" alt="CTA final no celular"></div>
+      </div>
+      <p class="pt__rotulo">Estados da rolagem no desktop</p>
+      <div class="pt__tira" style="--n:3">
+        <figure><img src="img/prototipo/cta-1.webp" alt=""><figcaption><b>Entrada</b>A faixa escura aparece recuada, com cantos arredondados.</figcaption></figure>
+        <figure><img src="img/prototipo/cta-2.webp" alt=""><figcaption><b>Meio</b>Ela cresce até a largura toda e o monograma gira até assentar.</figcaption></figure>
+        <figure><img src="img/prototipo/cta-3.webp" alt=""><figcaption><b>Fim</b>Convite, botões e rodapé no lugar.</figcaption></figure>
+      </div>
+      <p class="pt__legenda">A faixa vinho profundo sobe como cortina e marca o fim da página. O convite repete o do topo, "Agendar avaliação", com o WhatsApp como caminho alternativo e o responsável técnico no rodapé.</p>
+    </div>
+  </div>
+</section>
+
+<footer class="rodape-doc">
+  <div class="wrap"><span>Complexo SC · design system v1 · preparado pela Marca Digital</span><span>Fotos: acervo atual da clínica · Fontes: Google Fonts</span></div>
+</footer>
+
+</body>
+</html>

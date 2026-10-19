@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="512" height="512">
+  <!-- Fundo arredondado (mude o fill para a cor da sua marca, ex: #FF4000 ou #000000) -->
+  <rect width="100" height="100" rx="20" fill="#000000"/>
+  <!-- Ícone branco centralizado -->
+  <path d="M50 15 Q57 45 80 68 Q50 60 20 68 Q43 45 50 15Z" fill="#FFFFFF"/>
+</svg>

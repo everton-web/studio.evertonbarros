@@ -1,0 +1,57 @@
+{
+  "slug": "movere-odontologia",
+  "empresa": "Movere Odontologia",
+  "segmento": "odontologia",
+  "cidade": "Curitiba",
+  "geradoEm": "2026-09-29",
+  "pontuacao": 70,
+  "google": {
+    "nota": null,
+    "avaliacoes": null,
+    "categorias": [],
+    "mapsUrl": "https://www.google.com/maps/search/?api=1&query=Movere%20Odontologia%20Curitiba%2FPR"
+  },
+  "site": {
+    "url": "https://movereodontologia.com.br/",
+    "ok": true
+  },
+  "redes": {
+    "instagram": "",
+    "facebook": "",
+    "tiktok": "",
+    "linkedin": "",
+    "youtube": ""
+  },
+  "faltas": [
+    {
+      "area": "site",
+      "tag": "Busca local",
+      "oportunidade": "Ser encontrado por quem procura dentista na sua região, com um título que chama atenção nos resultados."
+    },
+    {
+      "area": "rastreio",
+      "tag": "Meta Pixel",
+      "oportunidade": "Reimpactar quem já visitou seu site, transformando interesse em agendamento."
+    },
+    {
+      "area": "redes",
+      "tag": "Instagram",
+      "oportunidade": "Ligar seu Instagram ao site para quem te procura continuar no seu perfil."
+    },
+    {
+      "area": "site",
+      "tag": "Negócio local",
+      "oportunidade": "Aparecer no Google como o negócio local da sua região, do jeito que os buscadores entendem melhor."
+    },
+    {
+      "area": "site",
+      "tag": "WhatsApp · Instagram",
+      "oportunidade": "Link com imagem bonita ao compartilhar no WhatsApp e no Instagram."
+    }
+  ],
+  "fortes": [
+    "Site no ar, com HTTPS e versão para celular",
+    "Já tem algum rastreamento instalado",
+    "WhatsApp linkado no site"
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "slug": "clinica-odontologica-lavid",
+  "empresa": "Clínica Odontológica LAVID",
+  "segmento": "odontologia",
+  "cidade": "Salvador",
+  "geradoEm": "2026-09-28",
+  "pontuacao": 74,
+  "google": {
+    "nota": null,
+    "avaliacoes": null,
+    "categorias": [],
+    "mapsUrl": "https://www.google.com/maps/search/?api=1&query=Cl%C3%ADnica%20Odontol%C3%B3gica%20LAVID%20Salvador%2FBA"
+  },
+  "site": {
+    "url": "https://clinicalavid.com.br/",
+    "ok": true
+  },
+  "redes": {
+    "instagram": "https://www.instagram.com/clinica.lavid",
+    "facebook": "",
+    "tiktok": "",
+    "linkedin": "",
+    "youtube": "https://www.youtube.com/@clinicalavid"
+  },
+  "faltas": [
+    {
+      "area": "site",
+      "tag": "Encontrabilidade",
+      "oportunidade": "Aparecer no Google com conteúdo que o buscador consegue ler e ranquear."
+    },
+    {
+      "area": "rastreio",
+      "tag": "Google Analytics",
+      "oportunidade": "Saber de onde vêm os pacientes para investir no que realmente funciona."
+    },
+    {
+      "area": "rastreio",
+      "tag": "Meta Pixel",
+      "oportunidade": "Reimpactar quem já visitou seu site, transformando interesse em agendamento."
+    }
+  ],
+  "fortes": [
+    "Site no ar, com HTTPS e versão para celular",
+    "WhatsApp linkado no site",
+    "Instagram linkado no site"
+  ]
+}

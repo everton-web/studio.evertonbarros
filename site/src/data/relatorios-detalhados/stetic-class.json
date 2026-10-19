@@ -1,0 +1,93 @@
+{
+  "slug": "stetic-class",
+  "empresa": "Complexo SC",
+  "cidade": "Fortaleza/CE",
+  "site": "https://www.steticclass.com.br/",
+  "geradoEm": "2026-10-02",
+  "designSystem": "/relatorio/stetic-class/design-system",
+  "prototipo": "/relatorio/stetic-class/prototipo",
+  "resumo": "O Complexo SC tem um conteúdo que muita clínica gostaria de ter: centro cirúrgico próprio, equipe com nome e registro, um método autoral e uma experiência de hotelaria. O site atual não deixa nada disso aparecer. A mensagem é premium, mas a página parece genérica, e a paciente que chega pelo Instagram encontra menos do que o perfil promete.",
+  "forte": {
+    "titulo": "O conteúdo é muito bom",
+    "intro": "Antes de falar do visual, o que já existe e vale ouro numa proposta de cirurgia plástica:",
+    "itens": [
+      {
+        "titulo": "Centro cirúrgico próprio",
+        "texto": "Segurança é a primeira pergunta de quem pensa em cirurgia. Ter estrutura hospitalar própria, equipe anestésica e protocolos responde essa pergunta antes que ela seja feita.",
+        "imagem": "forte-centro-cirurgico.webp"
+      },
+      {
+        "titulo": "Equipe com nome, registro e especialidade",
+        "texto": "O Dr. Valderi Vieira aparece com CRM e RQE, e cada profissional tem uma área clara. Isso é autoridade verificável, e é o que diferencia uma clínica séria de um perfil de Instagram.",
+        "imagem": "forte-equipe.webp"
+      },
+      {
+        "titulo": "Um método autoral",
+        "texto": "O Método RPP, criado pela Dra. Olga Vieira para a reestruturação pós-parto, é um diferencial que concorrente nenhum pode copiar. Hoje ele aparece como mais um card na lista.",
+        "imagem": "forte-metodo.webp"
+      },
+      {
+        "titulo": "Experiência de hotelaria",
+        "texto": "Recepção pensada como lounge e uma cafeteria anexa. Para quem vai passar por uma cirurgia, acolhimento é parte do tratamento, e isso merece ser mostrado com orgulho.",
+        "imagem": "forte-hotelaria.webp"
+      },
+      {
+        "titulo": "Resultados que atraem no Instagram",
+        "texto": "A maior parte dos resultados publicados é de cirurgia de mama, e é isso que traz a paciente até a clínica. O site deveria continuar essa conversa, não começar outra.",
+        "imagem": ""
+      }
+    ]
+  },
+  "fraco": {
+    "titulo": "O visual não acompanha",
+    "intro": "Os pontos que hoje fazem a página parecer menor do que a clínica é, cada um com o trecho do site atual:",
+    "itens": [
+      {
+        "titulo": "Texto dourado sobre vinho escuro",
+        "texto": "Quase toda a página usa letras douradas e cinzas sobre fundo vinho muito escuro. Fica bonito de longe e cansativo de ler, principalmente no celular, que é onde a paciente chega.",
+        "impacto": "Leitura difícil, a paciente desiste antes de entender a proposta.",
+        "imagem": "fraco-contraste.webp"
+      },
+      {
+        "titulo": "Hierarquia sem ponto de foco",
+        "texto": "Títulos, textos e botões têm pesos parecidos. Nada diz para onde olhar primeiro, então tudo compete e nada se destaca.",
+        "impacto": "A mensagem principal se perde no meio do resto.",
+        "imagem": "fraco-hierarquia.webp"
+      },
+      {
+        "titulo": "Especialidades em lista, sem prioridade",
+        "texto": "Seis procedimentos aparecem como seis cards iguais. A cirurgia de mama, que é o carro-chefe no Instagram, não ganha destaque nenhum.",
+        "impacto": "A paciente que veio pela mama não se encontra na página.",
+        "imagem": "fraco-especialidades.webp"
+      },
+      {
+        "titulo": "Equipe com cara de post",
+        "texto": "Os cards dos profissionais são artes de Instagram com texto pequeno dentro da imagem. No site, isso fica ilegível e tira a seriedade que o CRM e o RQE trazem.",
+        "impacto": "A autoridade da equipe, o maior ativo, perde força.",
+        "imagem": "fraco-equipe.webp"
+      },
+      {
+        "titulo": "Fotos de qualidades diferentes",
+        "texto": "Foto de equipe produzida ao lado de foto de celular da fachada e da recepção. A mistura passa a sensação de improviso numa marca que vende excelência.",
+        "impacto": "Quebra a percepção premium que o texto promete.",
+        "imagem": "fraco-fotos.webp"
+      },
+      {
+        "titulo": "Chamadas diferentes para a mesma ação",
+        "texto": "\"Agende sua consulta\", \"Falar com uma especialista\", \"Agendar minha avaliação VIP\": três textos para o mesmo passo. A paciente não sabe qual é o caminho.",
+        "impacto": "Menos cliques no WhatsApp, que é onde a consulta acontece.",
+        "imagem": "fraco-ctas.webp"
+      }
+    ]
+  },
+  "proposta": {
+    "titulo": "O que propomos",
+    "texto": "Um site com luxo silencioso e segurança médica: fundo claro em marfim, o vinho da marca como assinatura em pontos certos e o dourado só em detalhe. A cirurgia de mama abre a página, a equipe aparece com nome e registro, o centro cirúrgico prova a segurança e o Método RPP ganha página própria. Um único caminho até o WhatsApp.",
+    "imagens": ["proposta-1.webp", "proposta-2.webp"]
+  },
+  "proximos": [
+    "Validar com vocês o design system e a direção visual.",
+    "Organizar fotos: o que reaproveitar e o que vale produzir.",
+    "Montar o site novo com medição de cada contato que chega."
+  ]
+}

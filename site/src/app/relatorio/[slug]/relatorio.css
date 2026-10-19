@@ -1,0 +1,197 @@
+.relatorio {
+  --accent: #FF4000;
+  --accent-hover: #E63800;
+  --accent-subtle: rgba(255, 64, 0, 0.08);
+  --accent-glow: rgba(255, 64, 0, 0.15);
+  --bg: #040404;
+  --bg-soft: #0C0C0C;
+  --bg-card: #111111;
+  --bg-elevated: #1A1A1A;
+  --text: #FBFBFB;
+  --text-secondary: #AAAAAA;
+  --text-muted: #888888;
+  --text-dim: #555555;
+  --border: rgba(255, 255, 255, 0.08);
+  --border-hover: rgba(255, 255, 255, 0.14);
+  --border-active: rgba(255, 255, 255, 0.24);
+  background: var(--bg);
+  color: var(--text);
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+.relatorio *,
+.relatorio *::before,
+.relatorio *::after { box-sizing: border-box; }
+.relatorio a { color: inherit; text-decoration: none; }
+.relatorio button { font-family: inherit; cursor: pointer; }
+.relatorio input { font-family: inherit; }
+
+.relatorio .wrap { max-width: 760px; margin: 0 auto; padding: 0 20px; }
+
+.relatorio .micro-label {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.relatorio h1,
+.relatorio h2,
+.relatorio h3 {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  margin: 0;
+}
+
+/* header */
+.relatorio header.site-header { padding: 64px 0 40px; }
+.relatorio .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 48px; }
+.relatorio .brand .mark { width: 24px; height: 20px; display: flex; align-items: center; }
+.relatorio .brand .mark svg { width: 24px; height: 20px; display: block; }
+.relatorio .brand .wordmark { font-size: 1.05rem; font-weight: 700; letter-spacing: -0.01em; color: var(--text); }
+.relatorio .brand .wordmark .dot { color: var(--accent); }
+.relatorio .brand .domain { font-size: 0.8rem; font-weight: 400; color: var(--text-dim); margin-left: 2px; }
+.relatorio .hero .micro-label { margin-bottom: 18px; }
+.relatorio .hero h1 { font-size: clamp(2.5rem, 8vw, 4rem); font-weight: 700; letter-spacing: -0.03em; color: var(--text); margin-bottom: 12px; }
+.relatorio .hero .meta-line { font-size: 1rem; color: var(--text-muted); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.relatorio .hero .meta-line .sep { color: var(--text-dim); margin: 0 4px; }
+
+/* score */
+.relatorio section.score { padding: 16px 0 48px; }
+.relatorio .score-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 28px 24px;
+  position: relative;
+  overflow: hidden;
+}
+.relatorio .score-card::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent-glow), transparent);
+}
+.relatorio .score-top { display: flex; flex-direction: column; align-items: center; gap: 20px; text-align: center; }
+.relatorio .ring { position: relative; width: 150px; height: 150px; }
+.relatorio .ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.relatorio .ring .track { fill: none; stroke: var(--bg-elevated); stroke-width: 11; }
+.relatorio .ring .progress { fill: none; stroke: url(#relatorioScoreGradient); stroke-width: 11; stroke-linecap: round; }
+.relatorio .ring .value { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.relatorio .ring .value .num { font-size: 2.5rem; font-weight: 700; letter-spacing: -0.03em; color: var(--text); line-height: 1; }
+.relatorio .ring .value .total { font-size: 0.85rem; color: var(--text-dim); margin-top: 4px; }
+.relatorio .score-label { font-size: 0.95rem; color: var(--text-secondary); }
+.relatorio .score-label strong { color: var(--text); font-weight: 600; }
+
+/* strengths */
+.relatorio .strengths { margin-top: 28px; border-top: 1px solid var(--border); padding-top: 22px; }
+.relatorio .strengths h2 { font-size: 1.05rem; font-weight: 600; color: var(--text); margin-bottom: 14px; letter-spacing: -0.01em; }
+.relatorio .strengths ul { list-style: none; display: flex; flex-direction: column; gap: 12px; margin: 0; padding: 0; }
+.relatorio .strengths li { display: flex; align-items: flex-start; gap: 12px; font-size: 0.95rem; color: var(--text-secondary); }
+.relatorio .strengths li .check { flex-shrink: 0; width: 22px; height: 22px; border-radius: 50%; background: var(--accent-subtle); display: flex; align-items: center; justify-content: center; margin-top: 2px; }
+.relatorio .strengths li .check svg { width: 12px; height: 12px; }
+.relatorio .strengths li .check svg path { stroke: var(--accent); }
+
+/* opportunities */
+.relatorio section.opportunities { padding: 24px 0 56px; }
+.relatorio .section-head { margin-bottom: 28px; }
+.relatorio .section-head h2 { font-size: clamp(1.6rem, 5vw, 2.1rem); letter-spacing: -0.02em; margin-top: 10px; }
+.relatorio .section-head p { color: var(--text-muted); font-size: 0.98rem; margin-top: 8px; max-width: 46ch; }
+.relatorio .opp-group { margin-bottom: 28px; }
+.relatorio .opp-group > h3 { font-size: 0.78rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 12px; }
+.relatorio .opp-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 18px 20px; transition: border-color 0.2s ease, transform 0.2s ease; }
+.relatorio .opp-card + .opp-card { margin-top: 10px; }
+.relatorio .opp-card:hover { border-color: var(--border-hover); transform: translateY(-1px); }
+.relatorio .opp-card .tag {
+  display: inline-block;
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: var(--accent-subtle);
+  border: 1px solid var(--accent-glow);
+  border-radius: 999px;
+  padding: 4px 10px;
+  margin-bottom: 10px;
+}
+.relatorio .opp-card p { font-size: 1rem; color: var(--text); line-height: 1.5; margin: 0; }
+
+/* pains */
+.relatorio section.pains { padding: 24px 0 56px; }
+.relatorio .pains .section-head h2 { color: var(--text); }
+.relatorio .pain-list { display: flex; flex-direction: column; gap: 12px; }
+.relatorio .pain-item { position: relative; display: block; }
+.relatorio .pain-item input { position: absolute; opacity: 0; width: 0; height: 0; pointer-events: none; }
+.relatorio .pain-item .pain-box {
+  display: flex; align-items: center; gap: 16px; min-height: 64px;
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px;
+  padding: 14px 18px; cursor: pointer; user-select: none;
+  transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+.relatorio .pain-item .pain-box:hover { border-color: var(--border-hover); }
+.relatorio .pain-item .box { flex-shrink: 0; width: 26px; height: 26px; border-radius: 8px; border: 2px solid var(--border-active); display: flex; align-items: center; justify-content: center; transition: background 0.2s ease, border-color 0.2s ease; }
+.relatorio .pain-item .box svg { width: 15px; height: 15px; }
+.relatorio .pain-item .box svg path { stroke: #fff; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; fill: none; stroke-dasharray: 24; stroke-dashoffset: 24; transition: stroke-dashoffset 0.25s ease 0.05s; }
+.relatorio .pain-item .label { font-size: 1rem; font-weight: 500; color: var(--text-secondary); transition: color 0.2s ease; line-height: 1.4; }
+.relatorio .pain-item input:checked + .pain-box { border-color: var(--accent); background: var(--accent-subtle); box-shadow: 0 0 0 1px var(--accent-glow); }
+.relatorio .pain-item input:checked + .pain-box .box { background: var(--accent); border-color: var(--accent); }
+.relatorio .pain-item input:checked + .pain-box .box svg path { stroke-dashoffset: 0; }
+.relatorio .pain-item input:checked + .pain-box .label { color: var(--text); }
+
+/* calc */
+.relatorio section.calc { padding: 24px 0 56px; }
+.relatorio .calc-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 28px 24px; }
+.relatorio .calc-card .formula { font-size: 0.8rem; color: var(--text-muted); background: var(--bg-elevated); border-radius: 10px; padding: 10px 14px; margin: 16px 0 22px; letter-spacing: 0.02em; line-height: 1.6; }
+.relatorio .calc-card .formula code { font-family: inherit; color: var(--text-secondary); font-weight: 500; }
+.relatorio .result-row { display: flex; align-items: flex-end; gap: 14px; flex-wrap: wrap; margin-bottom: 8px; }
+.relatorio .result-value { font-size: clamp(2.6rem, 9vw, 3.6rem); font-weight: 700; letter-spacing: -0.03em; color: var(--text); line-height: 1; font-variant-numeric: tabular-nums; }
+.relatorio .result-unit { font-size: 1rem; color: var(--text-muted); padding-bottom: 6px; }
+.relatorio .result-placeholder { font-size: 1.05rem; color: var(--text-muted); padding: 8px 0 14px; }
+.relatorio .chip { display: inline-flex; align-items: center; gap: 8px; font-size: 0.8rem; font-weight: 600; color: var(--accent); background: var(--accent-subtle); border: 1px solid var(--accent-glow); border-radius: 999px; padding: 6px 14px; margin-bottom: 24px; }
+.relatorio .chip .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
+.relatorio .inputs { display: flex; flex-direction: column; gap: 16px; margin-bottom: 20px; }
+.relatorio .input-row { display: flex; flex-direction: column; gap: 8px; }
+.relatorio .input-row label { font-size: 0.8rem; font-weight: 500; color: var(--text-secondary); }
+.relatorio .input-row .field { position: relative; }
+.relatorio .input-row input { width: 100%; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 12px; padding: 13px 16px; font-size: 1.05rem; font-weight: 600; color: var(--text); transition: border-color 0.2s ease; -moz-appearance: textfield; }
+.relatorio .input-row input::-webkit-outer-spin-button,
+.relatorio .input-row input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.relatorio .input-row input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-subtle); }
+.relatorio .input-row .prefix { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-weight: 500; font-size: 1rem; pointer-events: none; }
+.relatorio .input-row .prefix + input { padding-left: 38px; }
+.relatorio .fixed-note { font-size: 0.78rem; color: var(--text-dim); line-height: 1.6; border-top: 1px solid var(--border); padding-top: 16px; margin-top: 4px; }
+.relatorio .disclaimer { font-size: 0.78rem; color: var(--text-dim); line-height: 1.6; border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; margin-top: 20px; }
+
+/* cta + footer */
+.relatorio section.cta { padding: 24px 0 80px; }
+.relatorio .btn-whatsapp {
+  display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%;
+  background: var(--accent); color: #FBFBFB; border: none; border-radius: 999px;
+  padding: 14px 32px; font-size: 1.05rem; font-weight: 600; letter-spacing: -0.01em;
+  transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+.relatorio .btn-whatsapp:hover { background: var(--accent-hover); box-shadow: 0 8px 40px rgba(255, 64, 0, 0.25); transform: translateY(-1px); }
+.relatorio .btn-whatsapp svg { width: 20px; height: 20px; flex-shrink: 0; }
+.relatorio .cta-note { text-align: center; font-size: 0.8rem; color: var(--text-dim); margin-top: 16px; }
+.relatorio footer.site-footer { padding: 24px 0 48px; text-align: center; border-top: 1px solid var(--border); }
+.relatorio footer.site-footer .brand { justify-content: center; margin-bottom: 8px; }
+.relatorio footer.site-footer p { font-size: 0.78rem; color: var(--text-dim); margin: 0; }
+
+@media (min-width: 640px) {
+  .relatorio .score-top { flex-direction: row; text-align: left; gap: 28px; justify-content: flex-start; }
+  .relatorio .score-label { max-width: 30ch; }
+  .relatorio .inputs { flex-direction: row; gap: 16px; }
+  .relatorio .input-row { flex: 1; }
+}
+
+.relatorio h1, .relatorio h2, .relatorio h3, .relatorio h4, .relatorio h5, .relatorio h6 { text-wrap: balance; }
+.relatorio p, .relatorio li { text-wrap: pretty; }

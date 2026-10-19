@@ -1,0 +1,43 @@
+{
+  "slug": "clinica-odontologica-colombo",
+  "empresa": "Clinica Odontologica Colombo",
+  "segmento": "odontologia",
+  "cidade": "PR",
+  "geradoEm": "2026-10-06",
+  "pontuacao": 84,
+  "google": {
+    "nota": null,
+    "avaliacoes": null,
+    "categorias": [],
+    "mapsUrl": "https://www.google.com/maps/search/?api=1&query=Clinica%20Odontologica%20Colombo%20PR"
+  },
+  "site": {
+    "url": "https://www.odontocolombo.com.br/",
+    "ok": true
+  },
+  "redes": {
+    "instagram": "https://www.instagram.com/odonto_colombo/",
+    "facebook": "https://www.facebook.com/odontocolombodrasilvana",
+    "tiktok": "",
+    "linkedin": "",
+    "youtube": "https://www.youtube.com/channel/UCm6dCeSX3G7MDir4Q6joKnw"
+  },
+  "faltas": [
+    {
+      "area": "rastreio",
+      "tag": "Meta Pixel",
+      "oportunidade": "Reimpactar quem já visitou seu site, transformando interesse em agendamento."
+    },
+    {
+      "area": "site",
+      "tag": "Negócio local",
+      "oportunidade": "Aparecer no Google como o negócio local da sua região, do jeito que os buscadores entendem melhor."
+    }
+  ],
+  "fortes": [
+    "Site no ar, com HTTPS e versão para celular",
+    "Já tem algum rastreamento instalado",
+    "WhatsApp linkado no site",
+    "Instagram linkado no site"
+  ]
+}

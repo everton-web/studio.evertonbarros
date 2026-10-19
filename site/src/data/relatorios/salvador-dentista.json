@@ -1,0 +1,47 @@
+{
+  "slug": "salvador-dentista",
+  "empresa": "Salvador Dentista",
+  "segmento": "odontologia",
+  "cidade": "Salvador",
+  "geradoEm": "2026-09-28",
+  "pontuacao": 78,
+  "google": {
+    "nota": null,
+    "avaliacoes": null,
+    "categorias": [],
+    "mapsUrl": "https://www.google.com/maps/search/?api=1&query=Salvador%20Dentista%20Salvador%2FBA"
+  },
+  "site": {
+    "url": "https://www.salvadordentista.com.br/",
+    "ok": true
+  },
+  "redes": {
+    "instagram": "https://instagram.com/salvadordentista",
+    "facebook": "",
+    "tiktok": "",
+    "linkedin": "",
+    "youtube": ""
+  },
+  "faltas": [
+    {
+      "area": "rastreio",
+      "tag": "Google Analytics",
+      "oportunidade": "Saber de onde vêm os pacientes para investir no que realmente funciona."
+    },
+    {
+      "area": "rastreio",
+      "tag": "Meta Pixel",
+      "oportunidade": "Reimpactar quem já visitou seu site, transformando interesse em agendamento."
+    },
+    {
+      "area": "site",
+      "tag": "WhatsApp · Instagram",
+      "oportunidade": "Link com imagem bonita ao compartilhar no WhatsApp e no Instagram."
+    }
+  ],
+  "fortes": [
+    "Site no ar, com HTTPS e versão para celular",
+    "WhatsApp linkado no site",
+    "Instagram linkado no site"
+  ]
+}
